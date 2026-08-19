@@ -1498,10 +1498,10 @@ h1, h2, h3, h4, h5, h6 {
     text-align: center;
   }
   .hero-section h1 {
-    font-size: 2rem;
+    font-size: 1.8rem;
   }
   .hero-section p {
-    font-size: 1rem;
+    font-size: 0.9rem;
     margin-left: auto;
     margin-right: auto;
   }
@@ -1529,13 +1529,16 @@ h1, h2, h3, h4, h5, h6 {
     gap: 1.5rem;
   }
   .hero-stats .stat-item .stat-number {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
+  }
+  .hero-stats .stat-item .stat-label {
+    font-size: 0.7rem;
   }
   .hero-image-wrapper {
     margin-top: 2rem;
   }
   .hero-image-wrapper img {
-    max-width: 300px;
+    max-width: 280px;
     transform: none;
   }
   .hero-image-wrapper img:hover {
@@ -1546,7 +1549,7 @@ h1, h2, h3, h4, h5, h6 {
     padding: 2.5rem 0;
   }
   .stat-card-modern .stat-number {
-    font-size: 2rem;
+    font-size: 1.8rem;
   }
 
   .why-choose-section,
@@ -1555,14 +1558,23 @@ h1, h2, h3, h4, h5, h6 {
     padding: 3rem 0;
   }
   .cta-section h2 {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
+  }
+  .cta-section p {
+    font-size: 0.9rem;
   }
 
   .listing-card .card-img-top {
     height: 180px;
   }
+  .listing-card .card-body .card-title {
+    font-size: 0.95rem;
+  }
+  .listing-card .card-body .card-text {
+    font-size: 0.82rem;
+  }
   .gallery-main img {
-    height: 250px;
+    height: 220px;
   }
   .gallery-thumbs {
     grid-template-columns: repeat(2, 1fr);
@@ -1582,6 +1594,9 @@ h1, h2, h3, h4, h5, h6 {
     position: static;
     margin-top: 1rem;
   }
+  .sticky-contact-card .price-display {
+    font-size: 1.5rem;
+  }
 
   .footer-modern {
     padding: 2.5rem 0 0;
@@ -1589,9 +1604,12 @@ h1, h2, h3, h4, h5, h6 {
   .footer-modern .col-md-3 {
     margin-bottom: 1.5rem;
   }
+  .footer-modern h5 {
+    font-size: 0.95rem;
+  }
 
   .dashboard-stat-card .stat-number {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
   }
 
   .nav-search-form .search-inp {
@@ -1599,13 +1617,33 @@ h1, h2, h3, h4, h5, h6 {
     width: 100%;
   }
   .notif-dropdown {
-    width: 300px;
+    width: 280px;
     right: -60px !important;
   }
 
   .tax-toggle {
     margin-left: 0;
     margin-top: 0.5rem;
+  }
+
+  .show-page-header h2 {
+    font-size: 1.4rem;
+  }
+  .room-info-item .info-value {
+    font-size: 0.85rem;
+  }
+  .owner-card {
+    padding: 1rem;
+  }
+  .review-card {
+    padding: 1rem;
+  }
+  .visit-request-section {
+    padding: 1rem;
+  }
+
+  .section-title {
+    font-size: 1.3rem;
   }
 }
 
@@ -1616,7 +1654,10 @@ h1, h2, h3, h4, h5, h6 {
     padding: 5rem 0;
   }
   .hero-section h1 {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
+  }
+  .hero-section p {
+    font-size: 0.95rem;
   }
   .hero-section .row {
     flex-direction: column-reverse;
@@ -1625,14 +1666,14 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: 2rem;
   }
   .hero-image-wrapper img {
-    max-width: 400px;
+    max-width: 350px;
   }
 
   .gallery-main img {
-    height: 300px;
+    height: 280px;
   }
   .gallery-thumbs img {
-    height: 80px;
+    height: 75px;
   }
 
   .sticky-contact-card {
@@ -1643,15 +1684,25 @@ h1, h2, h3, h4, h5, h6 {
   .footer-modern .col-md-3 {
     margin-bottom: 1.5rem;
   }
+
+  .listing-card .card-img-top {
+    height: 200px;
+  }
 }
 
 /* Laptop (769px–992px) */
 @media (min-width: 769px) and (max-width: 992px) {
   .hero-section h1 {
-    font-size: 2.8rem;
+    font-size: 2.6rem;
+  }
+  .hero-section p {
+    font-size: 1rem;
   }
   .gallery-main img {
-    height: 350px;
+    height: 340px;
+  }
+  .listing-card .card-img-top {
+    height: 210px;
   }
 }
 

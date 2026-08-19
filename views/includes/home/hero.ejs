@@ -17,7 +17,7 @@
   <div id="homeHeroCarousel" class="carousel slide home-hero-carousel carousel-fade" data-bs-ride="carousel" data-bs-interval="6000">
     <div class="carousel-inner home-hero-inner">
       <% heroSlides.forEach((slide, i) => { %>
-        <div class="carousel-item home-hero-slide <%= i === 0 ? 'active' : '' %>" style="background-image:url('<%= slide.img %>');"></div>
+        <div class="carousel-item home-hero-slide <%= i === 0 ? 'active' : '' %>" style="background-image:url('<%= slide.img %>'); opacity:0.5"></div>
       <% }) %>
     </div>
     <button class="carousel-control-prev home-hero-ctrl" type="button" data-bs-target="#homeHeroCarousel" data-bs-slide="prev">
@@ -37,13 +37,13 @@
   </div>
 
   <div class="container home-hero-content">
-    <div class="row align-items-center g-4">
+    <div class="row align-items-center g-4 m-4">
       <div class="col-lg-6">
         <div class="home-hero-left">
           <span class="home-hero-badge"><i class="fa-solid fa-graduation-cap"></i> Trusted Student Housing Platform</span>
-          <h1 class="home-hero-title">
+          <h1 class="home-hero-title ">
             Find Comfortable<br>
-            <span>Rooms for Monthly Rent</span>
+            Rooms for Monthly Rent
           </h1>
           <p class="home-hero-desc">
             Discover verified, affordable rooms near your college. Safe, secure, and student-friendly rentals at your fingertips.
@@ -74,20 +74,25 @@
       <div class="col-lg-6">
         <div class="home-hero-search-card">
           <!-- Tabs -->
-          <ul class="nav nav-pills home-hero-tabs" id="heroTabs" role="tablist">
+          <ul class="nav nav-pills home-hero-tabs " id="heroTabs" role="tablist">
             <li class="nav-item" role="presentation">
-              <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tabRooms" type="button" role="tab">
+              <button class="nav-link active"  style="color: antiquewhite !important;" data-bs-toggle="tab" data-bs-target="#tabRooms" type="button" role="tab ">
                 <i class="fa-solid fa-bed"></i> Rooms
               </button>
             </li>
             <li class="nav-item" role="presentation">
-              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabMess" type="button" role="tab">
+              <button class="nav-link"  style="color: antiquewhite !important;" data-bs-toggle="tab" data-bs-target="#tabMess" type="button" role="tab">
                 <i class="fa-solid fa-utensils"></i> Mess
               </button>
             </li>
             <li class="nav-item" role="presentation">
-              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabLaundry" type="button" role="tab">
+              <button class="nav-link"  style="color: antiquewhite !important;" data-bs-toggle="tab" data-bs-target="#tabLaundry" type="button" role="tab">
                 <i class="fa-solid fa-shirt"></i> Laundry
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link"  style="color: antiquewhite !important;" data-bs-toggle="tab" data-bs-target="#tabVehicles" type="button" role="tab">
+                <i class="fa-solid fa-car"></i> Vehicles
               </button>
             </li>
           </ul>
@@ -210,6 +215,61 @@
                   <div class="col-12">
                     <button type="submit" class="home-btn-primary home-hero-search-btn w-100">
                       <i class="fa-solid fa-magnifying-glass"></i> Search Laundry
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            <!-- VEHICLES SEARCH -->
+            <div class="tab-pane fade" id="tabVehicles" role="tabpanel">
+              <form action="/vehicles" method="GET" class="home-hero-form">
+                <div class="row g-3">
+                  <div class="col-12">
+                    <label class="home-form-label"><i class="fa-solid fa-location-dot"></i> Location</label>
+                    <input type="text" class="form-control home-form-control" name="q" placeholder="Vehicle name, brand, city or area...">
+                  </div>
+                  <div class="col-md-6">
+                    <label class="home-form-label"><i class="fa-solid fa-car"></i> Vehicle Type</label>
+                    <select class="form-select home-form-control" name="vehicleType">
+                      <option value="">Any Type</option>
+                      <option value="Car">Car</option>
+                      <option value="Bike">Bike</option>
+                      <option value="Scooter">Scooter</option>
+                      <option value="SUV">SUV</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="home-form-label"><i class="fa-solid fa-indian-rupee-sign"></i> Budget / Day</label>
+                    <select class="form-select home-form-control" name="maxPrice">
+                      <option value="">Any Budget</option>
+                      <option value="500">Under ₹500</option>
+                      <option value="1000">Under ₹1,000</option>
+                      <option value="2000">Under ₹2,000</option>
+                      <option value="3000">Under ₹3,000</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="home-form-label"><i class="fa-solid fa-gas-pump"></i> Fuel Type</label>
+                    <select class="form-select home-form-control" name="fuelType">
+                      <option value="">Any Fuel</option>
+                      <option value="Petrol">Petrol</option>
+                      <option value="Diesel">Diesel</option>
+                      <option value="Electric">Electric</option>
+                      <option value="CNG">CNG</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="home-form-label"><i class="fa-solid fa-gears"></i> Gear Type</label>
+                    <select class="form-select home-form-control" name="gearType">
+                      <option value="">Any Gear</option>
+                      <option value="Manual">Manual</option>
+                      <option value="Automatic">Automatic</option>
+                    </select>
+                  </div>
+                  <div class="col-12">
+                    <button type="submit" class="home-btn-primary home-hero-search-btn w-100">
+                      <i class="fa-solid fa-magnifying-glass"></i> Search Vehicles
                     </button>
                   </div>
                 </div>
