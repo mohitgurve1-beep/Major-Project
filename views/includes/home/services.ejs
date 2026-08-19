@@ -1,0 +1,29 @@
+<%
+  // Services (Section 6) — four service cards.
+  const services = [
+    { icon: "fa-graduation-cap", title: "For Students", desc: "Find verified rooms, mess and laundry near your college with zero brokerage.", btn: "Explore Rooms", link: "/listings" },
+    { icon: "fa-user-tie",   title: "For Owners",   desc: "List your property free and reach thousands of students instantly.", btn: "List Your Property", link: "/listings/new" },
+    { icon: "fa-utensils",   title: "Mess",         desc: "Affordable, hygienic mess plans with flexible meal options.", btn: "Browse Mess", link: "/messes" },
+    { icon: "fa-shirt",      title: "Laundry",      desc: "Pickup, delivery and same-day laundry services at your doorstep.", btn: "Browse Laundry", link: "/laundry" },
+  ];
+%>
+<section class="home-services">
+  <div class="container">
+    <%- include("partials/sectionHeader.ejs", {
+      title: "Our Services",
+      subtitle: "Everything a student needs in one place",
+    }) %>
+    <div class="row g-4">
+      <% services.forEach(s => { %>
+        <div class="col-md-6 col-lg-3">
+          <div class="home-service-card h-100">
+            <div class="home-service-icon"><i class="fa-solid <%= s.icon %>"></i></div>
+            <h5 class="home-service-title"><%= s.title %></h5>
+            <p class="home-service-desc"><%= s.desc %></p>
+            <a href="<%= s.link %>" class="home-service-btn"><%= s.btn %> <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+</section>

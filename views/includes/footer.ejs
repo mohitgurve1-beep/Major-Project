@@ -1,14 +1,113 @@
-<footer>
-    <div class="f-info">
-        <div class="f-info-socials">
-            <i class="fa-brands fa-facebook"></i>
-            <i class="fa-brands fa-instagram"></i>
-            <i class="fa-brands fa-linkedin"></i>
+<%
+  // Premium four-column footer.
+  // Data is defined inline (EJS include scope is isolated, so footerExtras
+  // variables are not shared here). footerExtras.ejs is kept as a reusable
+  // reference/config partial for future modules.
+  const fCompanyDesc = "Your trusted platform for finding the perfect student accommodation. We connect students with verified, affordable rental rooms near colleges and universities.";
+  const fSocials = [
+    { icon: "fa-brands fa-facebook-f", label: "Facebook" },
+    { icon: "fa-brands fa-instagram",  label: "Instagram" },
+    { icon: "fa-brands fa-twitter",    label: "Twitter" },
+    { icon: "fa-brands fa-linkedin-in", label: "LinkedIn" },
+    { icon: "fa-brands fa-youtube",    label: "YouTube" },
+  ];
+  const fQuickLinks = [
+    { label: "Browse Rooms", href: "/listings" },
+    { label: "List Your Room", href: "/listings/new" },
+    { label: "Mess", href: "/messes" },
+    { label: "Laundry", href: "/laundry" },
+    { label: "Owner Dashboard", href: "/listings/owner/dashboard" },
+  ];
+  const fStudents = [
+    { label: "Featured Rooms", href: "/listings" },
+    { label: "Rooms Near Colleges", href: "/listings" },
+    { label: "How It Works", href: "#homeAbout" },
+    { label: "Create Account", href: "/signup" },
+    { label: "Sign In", href: "/login" },
+  ];
+  const fOwners = [
+    { label: "List Your Property", href: "/listings/new" },
+    { label: "Owner Dashboard", href: "/listings/owner/dashboard" },
+    { label: "Visit Requests", href: "/listings/owner/visit-requests" },
+    { label: "Mess Dashboard", href: "/messes/owner/dashboard" },
+    { label: "Laundry Dashboard", href: "/laundry/owner/dashboard" },
+  ];
+  const fPolicy = [
+    { label: "Privacy Policy", href: "/privacy" },
+    { label: "Terms of Service", href: "/terms" },
+    { label: "Refund Policy", href: "/refund" },
+  ];
+  const fContact = {
+    address: "123 Student Hub, MG Road, Nagpur - 440001",
+    phone: "+91 98765 43210",
+    email: "support@studentaccommodation.in",
+    hours: "Mon - Sat: 9:00 AM - 6:00 PM",
+  };
+%>
+<footer class="home-footer" id="homeContact">
+  <div class="container">
+    <div class="row g-4">
+      <!-- Company -->
+      <div class="col-md-6 col-lg-3">
+        <a class="home-footer-brand" href="/listings">
+          <span class="home-brand-icon"><i class="fa-solid fa-graduation-cap"></i></span>
+          <span class="home-brand-text">Student<span>Stay</span></span>
+        </a>
+        <p class="home-footer-desc"><%= fCompanyDesc %></p>
+        <div class="home-footer-socials">
+          <% for(let s of fSocials){ %>
+            <a href="#" aria-label="<%= s.label %>"><i class="<%= s.icon %>"></i></a>
+          <% } %>
         </div>
-        <div class="f-info-brand">&copy; WanderLust Private limited</div>
-        <div class="f-info-links">
-            <a href="/privacy">Privacy</a>
-            <a href="/terms">Terms</a>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="col-md-6 col-lg-3">
+        <h5 class="home-footer-title">Quick Links</h5>
+        <div class="home-footer-links">
+          <% for(let l of fQuickLinks){ %>
+            <a href="<%= l.href %>"><i class="fa-solid fa-angle-right"></i> <%= l.label %></a>
+          <% } %>
         </div>
+      </div>
+
+      <!-- Students + Owners -->
+      <div class="col-md-6 col-lg-3">
+        <h5 class="home-footer-title">For Students</h5>
+        <div class="home-footer-links">
+          <% for(let l of fStudents){ %>
+            <a href="<%= l.href %>"><i class="fa-solid fa-angle-right"></i> <%= l.label %></a>
+          <% } %>
+        </div>
+        <h5 class="home-footer-title mt-4">For Owners</h5>
+        <div class="home-footer-links">
+          <% for(let l of fOwners){ %>
+            <a href="<%= l.href %>"><i class="fa-solid fa-angle-right"></i> <%= l.label %></a>
+          <% } %>
+        </div>
+      </div>
+
+      <!-- Contact -->
+      <div class="col-md-6 col-lg-3">
+        <h5 class="home-footer-title">Contact</h5>
+        <ul class="home-footer-contact list-unstyled">
+          <li><i class="fa-solid fa-location-dot"></i> <span><%= fContact.address %></span></li>
+          <li><i class="fa-solid fa-phone"></i> <a href="tel:<%= fContact.phone %>"><%= fContact.phone %></a></li>
+          <li><i class="fa-solid fa-envelope"></i> <a href="mailto:<%= fContact.email %>"><%= fContact.email %></a></li>
+          <li><i class="fa-solid fa-clock"></i> <span><%= fContact.hours %></span></li>
+        </ul>
+      </div>
     </div>
+  </div>
+
+  <div class="home-footer-bottom">
+    <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+      <div>&copy; <%= new Date().getFullYear() %> StudentStay Accommodation. All rights reserved.</div>
+      <div class="d-flex flex-wrap gap-3">
+        <% for(let p of fPolicy){ %>
+          <a href="<%= p.href %>"><%= p.label %></a>
+        <% } %>
+      </div>
+    </div>
+  </div>
 </footer>

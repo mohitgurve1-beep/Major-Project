@@ -1,0 +1,106 @@
+<% layout("/layouts/boilerplate") %>
+<div class="row mt-3">
+    <div class="col-12 col-md-10 col-lg-8 mx-auto">
+        <h3><i class="fa-solid fa-utensils"></i> Edit your Mess</h3>
+        <form method="POST" action="/messes/<%= mess._id %>?_method=PUT" novalidate class="needs-validation" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="name" class="form-label">Mess Name *</label>
+                <input type="text" name="mess[name]" id="name" value="<%= mess.name %>" class="form-control" required>
+                <div class="invalid-feedback">Please provide a mess name.</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea name="mess[description]" id="description" class="form-control" rows="3"><%= mess.description || '' %></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="image" class="form-label">Current Mess Image</label>
+                <br>
+                <img src="<%= originalImageUrl %>" alt="<%= mess.name %>" style="max-width: 100%; height: auto; border-radius: 8px;">
+            </div>
+
+            <div class="mb-3">
+                <label for="image" class="form-label">Upload New Image</label>
+                <input type="file" name="mess[image]" id="image" class="form-control">
+            </div>
+
+            <div class="row">
+                <div class="mb-3 col-md-6">
+                    <label for="monthlyPrice" class="form-label">Monthly Price (&#8377;) *</label>
+                    <input type="number" name="mess[monthlyPrice]" id="monthlyPrice" value="<%= mess.monthlyPrice %>" min="0" class="form-control" required>
+                    <div class="invalid-feedback">Price should be valid.</div>
+                </div>
+                <div class="mb-3 col-md-6">
+                    <label for="mealType" class="form-label">Meal Type</label>
+                    <select name="mess[mealType]" id="mealType" class="form-select">
+                        <option value="">Select Meal Type</option>
+                        <% for(let t of mealTypes) { %>
+                            <option value="<%= t %>" <%= mess.mealType === t ? 'selected' : '' %>><%= t %></option>
+                        <% } %>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label d-block">Meals Provided</label>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" name="mess[breakfast]" id="breakfast" value="on" <%= mess.breakfast ? 'checked' : '' %>>
+                    <label class="form-check-label" for="breakfast"><i class="fa-solid fa-mug-hot"></i> Breakfast</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" name="mess[lunch]" id="lunch" value="on" <%= mess.lunch ? 'checked' : '' %>>
+                    <label class="form-check-label" for="lunch"><i class="fa-solid fa-bowl-food"></i> Lunch</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" name="mess[dinner]" id="dinner" value="on" <%= mess.dinner ? 'checked' : '' %>>
+                    <label class="form-check-label" for="dinner"><i class="fa-solid fa-utensils"></i> Dinner</label>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="timing" class="form-label">Timing</label>
+                <input type="text" name="mess[timing]" id="timing" value="<%= mess.timing || '' %>" class="form-control">
+            </div>
+
+            <div class="row">
+                <div class="mb-3 col-md-6">
+                    <label for="address" class="form-label">Address</label>
+                    <input type="text" name="mess[address]" id="address" value="<%= mess.address || '' %>" class="form-control">
+                </div>
+                <div class="mb-3 col-md-6">
+                    <label for="city" class="form-label">City</label>
+                    <input type="text" name="mess[city]" id="city" value="<%= mess.city || '' %>" class="form-control">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="mb-3 col-md-6">
+                    <label for="location" class="form-label">Area / Location</label>
+                    <input type="text" name="mess[location]" id="location" value="<%= mess.location || '' %>" class="form-control">
+                </div>
+                <div class="mb-3 col-md-6">
+                    <label for="contactNumber" class="form-label">Contact Number</label>
+                    <input type="text" name="mess[contactNumber]" id="contactNumber" value="<%= mess.contactNumber || '' %>" class="form-control">
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="mapLocation" class="form-label">Google Map Location</label>
+                <input type="text" name="mess[mapLocation]" id="mapLocation" value="<%= mess.mapLocation || '' %>" class="form-control">
+            </div>
+
+            <div class="mb-3">
+                <label for="availability" class="form-label">Availability</label>
+                <select name="mess[availability]" id="availability" class="form-select">
+                    <option value="">Select Availability</option>
+                    <% for(let o of availabilityOptions) { %>
+                        <option value="<%= o %>" <%= mess.availability === o ? 'selected' : '' %>><%= o %></option>
+                    <% } %>
+                </select>
+            </div>
+
+            <button class="btn btn-dark edit-btn mt-3"><i class="fa-solid fa-pen"></i> Update Mess</button>
+        </form>
+    </div>
+</div>

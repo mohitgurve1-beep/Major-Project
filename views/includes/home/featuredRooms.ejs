@@ -1,0 +1,28 @@
+<%
+  // Featured Rooms (Section 5) — premium responsive room cards.
+  const featRooms = typeof featuredRooms !== 'undefined' ? featuredRooms : [];
+%>
+<section class="home-section home-featured">
+  <div class="container">
+    <%- include("partials/sectionHeader.ejs", {
+      title: "Featured Rooms",
+      subtitle: "Handpicked accommodations loved by students",
+      link: "/listings",
+      linkText: "View All Rooms",
+    }) %>
+    <% if(featRooms.length > 0){ %>
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4">
+        <% featRooms.slice(0,4).forEach(room => {
+          const rc = room;
+        %>
+          <%- include("partials/roomCard.ejs", { room: rc }) %>
+        <% }); %>
+      </div>
+    <% } else { %>
+      <div class="text-center py-5">
+        <i class="fa-solid fa-bed fa-3x text-muted mb-3"></i>
+        <h5 class="text-muted">No featured rooms available yet.</h5>
+      </div>
+    <% } %>
+  </div>
+</section>

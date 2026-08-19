@@ -1,0 +1,51 @@
+<%
+  // Vehicle Rental homepage section (component-based architecture).
+  // Links to the /vehicles browse page. Fully independent partial.
+  const vStats = typeof vehicleStats !== 'undefined' ? vehicleStats : {};
+  const vList = typeof allVehicles !== 'undefined' ? allVehicles : [];
+%>
+<section class="section-title-divider"></section>
+<section class="home-services vehicle-services-section">
+  <div class="container">
+    <%- include("partials/sectionHeader.ejs", {
+      title: "Vehicle Rentals",
+      subtitle: "Cars & bikes for your daily commute",
+      link: "/vehicles",
+      linkText: "Browse Vehicles",
+    }) %>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3">
+        <div class="home-service-card h-100">
+          <div class="home-service-icon"><i class="fa-solid fa-car"></i></div>
+          <h5 class="home-service-title">Car Rentals</h5>
+          <p class="home-service-desc">Affordable daily and monthly car rentals for students and families.</p>
+          <a href="/vehicles?vehicleType=Car" class="home-service-btn">Browse Cars <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="home-service-card h-100">
+          <div class="home-service-icon"><i class="fa-solid fa-motorcycle"></i></div>
+          <h5 class="home-service-title">Bike Rentals</h5>
+          <p class="home-service-desc">Flexible bike rentals perfect for daily college commutes.</p>
+          <a href="/vehicles?vehicleType=Bike" class="home-service-btn">Browse Bikes <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="home-service-card h-100">
+          <div class="home-service-icon"><i class="fa-solid fa-bolt"></i></div>
+          <h5 class="home-service-title">Electric</h5>
+          <p class="home-service-desc">Eco-friendly electric scooters and bikes at budget prices.</p>
+          <a href="/vehicles?fuelType=Electric" class="home-service-btn">Browse Electric <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="home-service-card h-100">
+          <div class="home-service-icon"><i class="fa-solid fa-user-tie"></i></div>
+          <h5 class="home-service-title">For Owners</h5>
+          <p class="home-service-desc">List your car or bike and earn from rentals.</p>
+          <a href="/vehicles/new" class="home-service-btn">List a Vehicle <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

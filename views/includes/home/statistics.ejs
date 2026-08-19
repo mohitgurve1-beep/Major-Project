@@ -1,0 +1,27 @@
+<%
+  // Platform Statistics (Section 7) — animated counters.
+  const st = typeof stats !== 'undefined' ? stats : {};
+  const statItems = [
+    { icon: "fa-bed",                num: st.totalRooms || 500,   suffix: "+", label: "Verified Rooms" },
+    { icon: "fa-graduation-cap",     num: st.totalStudents || 1000, suffix: "+", label: "Happy Students" },
+    { icon: "fa-user-tie",           num: st.totalOwners || 200,  suffix: "+", label: "Property Owners" },
+    { icon: "fa-utensils",           num: 50, suffix: "+", label: "Mess Partners" },
+    { icon: "fa-shirt",              num: 30, suffix: "+", label: "Laundry Services" },
+    { icon: "fa-headset",            num: 24, suffix: "×7", label: "Support" },
+  ];
+%>
+<section class="home-stats">
+  <div class="container">
+    <div class="row g-3">
+      <% statItems.forEach((it, i) => { %>
+        <div class="col-6 col-md-4 col-lg-2">
+          <div class="home-stat-card">
+            <div class="home-stat-icon"><i class="fa-solid <%= it.icon %>"></i></div>
+            <div class="home-stat-num" data-target="<%= it.num %>">0</div>
+            <div class="home-stat-lbl"><%= it.label %></div>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+</section>

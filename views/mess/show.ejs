@@ -1,0 +1,159 @@
+<% layout("/layouts/boilerplate") %>
+
+<!-- ============================================ -->
+<!-- MESS PAGE HEADER                             -->
+<!-- ============================================ -->
+<div class="show-page-header mt-4">
+  <div class="row">
+    <div class="col-lg-8">
+      <h2><%= mess.name %></h2>
+      <p class="location-text">
+        <i class="fa-solid fa-location-dot"></i>
+        <%= [mess.address, mess.city, mess.location].filter(Boolean).join(', ') || 'Location not set' %>
+      </p>
+    </div>
+    <div class="col-lg-4 text-lg-end">
+      <% if(mess.availability === 'Available') { %>
+        <span class="badge bg-success status-badge" style="font-size: 0.8rem; padding: 0.5em 1em; border-radius: 50px;">Available</span>
+      <% } else { %>
+        <span class="badge bg-secondary status-badge" style="font-size: 0.8rem; padding: 0.5em 1em; border-radius: 50px;">Closed</span>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- GALLERY + CONTACT CARD                       -->
+<!-- ============================================ -->
+<div class="row g-4">
+  <!-- Left Column: Gallery + Details -->
+  <div class="col-lg-8">
+    <!-- Gallery -->
+    <div class="gallery-section">
+      <div class="gallery-main">
+        <img id="messGalleryMain" src="<%= mess.image.url %>" alt="<%= mess.name %>" class="w-100">
+      </div>
+    </div>
+
+    <!-- Mess Info Grid -->
+    <div class="mess-info-grid">
+      <div class="mess-info-item">
+        <i class="fa-solid fa-indian-rupee-sign"></i>
+        <div class="info-label">Monthly Price</div>
+        <div class="info-value">&#8377;<%= mess.monthlyPrice.toLocaleString("en-IN") %>/mo</div>
+      </div>
+      <div class="mess-info-item">
+        <i class="fa-solid fa-utensils"></i>
+        <div class="info-label">Meal Type</div>
+        <div class="info-value"><%= mess.mealType || 'N/A' %></div>
+      </div>
+      <div class="mess-info-item">
+        <i class="fa-solid fa-clock"></i>
+        <div class="info-label">Timing</div>
+        <div class="info-value"><%= mess.timing || 'N/A' %></div>
+      </div>
+      <div class="mess-info-item">
+        <i class="fa-solid fa-city"></i>
+        <div class="info-label">City</div>
+        <div class="info-value"><%= mess.city || 'N/A' %></div>
+      </div>
+      <div class="mess-info-item">
+        <i class="fa-solid fa-location-dot"></i>
+        <div class="info-label">Area</div>
+        <div class="info-value"><%= mess.location || 'N/A' %></div>
+      </div>
+      <div class="mess-info-item">
+        <i class="fa-solid fa-phone"></i>
+        <div class="info-label">Contact</div>
+        <div class="info-value"><%= mess.contactNumber || 'N/A' %></div>
+      </div>
+    </div>
+
+    <!-- Meals Provided -->
+    <div class="mb-4">
+      <h5 class="fw-bold mb-3"><i class="fa-solid fa-bowl-food"></i> Meals Provided</h5>
+      <div class="mess-meals-grid">
+        <div class="mess-meal-provided <%= mess.breakfast ? 'active' : '' %>">
+          <i class="fa-solid fa-mug-hot"></i>
+          <span>Breakfast</span>
+          <small><%= mess.breakfast ? 'Provided' : 'Not provided' %></small>
+        </div>
+        <div class="mess-meal-provided <%= mess.lunch ? 'active' : '' %>">
+          <i class="fa-solid fa-bowl-food"></i>
+          <span>Lunch</span>
+          <small><%= mess.lunch ? 'Provided' : 'Not provided' %></small>
+        </div>
+        <div class="mess-meal-provided <%= mess.dinner ? 'active' : '' %>">
+          <i class="fa-solid fa-utensils"></i>
+          <span>Dinner</span>
+          <small><%= mess.dinner ? 'Provided' : 'Not provided' %></small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Description -->
+    <div class="mb-4">
+      <h5 class="fw-bold mb-3"><i class="fa-solid fa-file-lines"></i> About this Mess</h5>
+      <p class="text-secondary"><%= mess.description || 'No description provided.' %></p>
+    </div>
+
+    <!-- Address -->
+    <div class="mb-4">
+      <h5 class="fw-bold mb-3"><i class="fa-solid fa-location-dot"></i> Address</h5>
+      <p class="text-secondary mb-0"><%= mess.address || 'Address not provided.' %></p>
+    </div>
+
+    <!-- Owner Card -->
+    <div class="owner-card mb-4">
+      <div class="d-flex align-items-center gap-3">
+        <div class="owner-avatar">
+          <%= mess.owner ? mess.owner.username.charAt(0).toUpperCase() : 'U' %>
+        </div>
+        <div class="flex-grow-1">
+          <div class="owner-name"><%= mess.owner ? mess.owner.username : 'Unknown' %></div>
+          <div class="owner-meta"><i class="fa-solid fa-house"></i> Mess Owner</div>
+        </div>
+        <% if(isOwnerOfMess) { %>
+          <a href="/messes/<%= mess._id %>/edit" class="btn btn-outline-primary btn-sm" style="border-radius: 50px;">
+            <i class="fa-solid fa-pen"></i> Edit
+          </a>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Column: Contact Card -->
+  <div class="col-lg-4">
+    <div class="sticky-contact-card">
+      <div class="price-display mb-3">
+        &#8377;<%= mess.monthlyPrice.toLocaleString("en-IN") %>
+        <small>/ month</small>
+      </div>
+      <hr>
+      <div class="mb-3">
+        <p class="mb-1"><i class="fa-solid fa-utensils" style="color: var(--primary);"></i> <%= mess.mealType || 'N/A' %></p>
+        <p class="mb-1"><i class="fa-solid fa-location-dot" style="color: var(--primary);"></i> <%= mess.city || 'N/A' %></p>
+        <p class="mb-1"><i class="fa-solid fa-clock" style="color: var(--primary);"></i> <%= mess.timing || 'N/A' %></p>
+      </div>
+      <hr>
+      <div class="d-flex align-items-center gap-2 mb-3">
+        <div class="profile-avatar" style="width: 44px; height: 44px; font-size: 1.1rem;">
+          <%= mess.owner ? mess.owner.username.charAt(0).toUpperCase() : 'U' %>
+        </div>
+        <div>
+          <strong><%= mess.owner ? mess.owner.username : 'Unknown' %></strong><br>
+          <small class="text-muted">Mess Owner</small>
+        </div>
+      </div>
+      <% if(isOwnerOfMess) { %>
+        <a href="/messes/<%= mess._id %>/edit" class="btn btn-book mb-2"><i class="fa-solid fa-pen"></i> Edit Mess</a>
+      <% } else { %>
+        <a href="tel:<%= mess.contactNumber || '' %>" class="btn btn-book mb-2"><i class="fa-solid fa-phone"></i> Contact for Booking</a>
+      <% } %>
+      <hr>
+      <div class="text-center text-muted" style="font-size: 0.8rem;">
+        <i class="fa-solid fa-shield-check"></i> Contact directly for meal plans
+      </div>
+    </div>
+  </div>
+</div>

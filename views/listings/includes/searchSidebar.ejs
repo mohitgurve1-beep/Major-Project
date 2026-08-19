@@ -1,0 +1,134 @@
+<!-- ============================================ -->
+<!-- ADVANCED SEARCH & FILTER SIDEBAR             -->
+<!-- Phase 11 — shared partial (desktop + mobile) -->
+<!-- ============================================ -->
+<%
+  // Safety guards so this partial works even if locals are missing
+  const f = typeof filters !== 'undefined' ? filters : {};
+  const rt = typeof roomTypes !== 'undefined' ? roomTypes : [];
+  const fo = typeof furnishingOptions !== 'undefined' ? furnishingOptions : [];
+  const go = typeof genderOptions !== 'undefined' ? genderOptions : [];
+  const ao = typeof availabilityOptions !== 'undefined' ? availabilityOptions : [];
+  const am = typeof amenityOptions !== 'undefined' ? amenityOptions : [];
+  const selAmen = (f.amenities && Array.isArray(f.amenities)) ? f.amenities : [];
+%>
+
+<form action="/listings" method="GET" class="filter-form">
+  <!-- Search by title / location / city / country -->
+  <div class="filter-group">
+    <label class="filter-label" for="sidebarQ">Search</label>
+    <div class="input-group input-group-sm">
+      <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
+      <input type="text" class="form-control" id="sidebarQ" name="q" placeholder="Title, location, city, country..." value="<%= f.q || '' %>">
+    </div>
+  </div>
+
+  <div class="filter-group">
+    <label class="filter-label" for="sidebarLocation">Location</label>
+    <input type="text" class="form-control form-control-sm" id="sidebarLocation" name="location" placeholder="e.g. Nagpur" value="<%= f.location || '' %>">
+  </div>
+
+  <div class="filter-group">
+    <label class="filter-label" for="sidebarCity">City</label>
+    <input type="text" class="form-control form-control-sm" id="sidebarCity" name="city" placeholder="e.g. Pune" value="<%= f.city || '' %>">
+  </div>
+
+  <!-- Monthly Rent (Min/Max) -->
+  <div class="filter-group">
+    <label class="filter-label">Monthly Rent (&#8377;)</label>
+    <div class="row g-2">
+      <div class="col-6">
+        <input type="number" class="form-control form-control-sm" name="minRent" placeholder="Min" min="0" value="<%= f.minRent || '' %>">
+      </div>
+      <div class="col-6">
+        <input type="number" class="form-control form-control-sm" name="maxRent" placeholder="Max" min="0" value="<%= f.maxRent || '' %>">
+      </div>
+    </div>
+  </div>
+
+  <!-- Room Type -->
+  <div class="filter-group">
+    <label class="filter-label">Room Type</label>
+    <select name="roomType" class="form-select form-select-sm">
+      <option value="">All Room Types</option>
+      <% for(let t of rt) { %>
+        <option value="<%= t %>" <%= f.roomType === t ? 'selected' : '' %>><%= t %></option>
+      <% } %>
+    </select>
+  </div>
+
+  <!-- Furnishing -->
+  <div class="filter-group">
+    <label class="filter-label">Furnishing</label>
+    <select name="furnishing" class="form-select form-select-sm">
+      <option value="">Any Furnishing</option>
+      <% for(let o of fo) { %>
+        <option value="<%= o %>" <%= f.furnishing === o ? 'selected' : '' %>><%= o %></option>
+      <% } %>
+    </select>
+  </div>
+
+  <!-- Gender Preference -->
+  <div class="filter-group">
+    <label class="filter-label">Gender Preference</label>
+    <select name="genderPreference" class="form-select form-select-sm">
+      <option value="">Anyone</option>
+      <% for(let o of go) { %>
+        <option value="<%= o %>" <%= f.genderPreference === o ? 'selected' : '' %>><%= o %></option>
+      <% } %>
+    </select>
+  </div>
+
+  <!-- Availability -->
+  <div class="filter-group">
+    <label class="filter-label">Availability</label>
+    <select name="availability" class="form-select form-select-sm">
+      <option value="">Any Availability</option>
+      <% for(let o of ao) { %>
+        <option value="<%= o %>" <%= f.availability === o ? 'selected' : '' %>><%= o %></option>
+      <% } %>
+    </select>
+  </div>
+
+  <!-- Minimum Stay -->
+  <div class="filter-group">
+    <label class="filter-label" for="sidebarMinStay">Minimum Stay (months)</label>
+    <input type="number" class="form-control form-control-sm" id="sidebarMinStay" name="minimumStay" placeholder="e.g. 6" min="1" max="36" value="<%= f.minimumStay || '' %>">
+  </div>
+
+  <!-- Amenities (multiple selection) -->
+  <div class="filter-group">
+    <label class="filter-label">Amenities</label>
+    <div class="amenity-check-list">
+      <% for(let a of am) { %>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="amenities" value="<%= a %>" id="amenity-<%= a.replace(/\s+/g, '-').replace(/\//g, '-') %>" <%= selAmen.includes(a) ? 'checked' : '' %>>
+          <label class="form-check-label" for="amenity-<%= a.replace(/\s+/g, '-').replace(/\//g, '-') %>"><%= a %></label>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- Sort -->
+  <div class="filter-group">
+    <label class="filter-label" for="sidebarSort">Sort By</label>
+    <select name="sort" id="sidebarSort" class="form-select form-select-sm">
+      <option value="">Default</option>
+      <option value="newest" <%= f.sort === 'newest' ? 'selected' : '' %>>Newest</option>
+      <option value="oldest" <%= f.sort === 'oldest' ? 'selected' : '' %>>Oldest</option>
+      <option value="price_asc" <%= f.sort === 'price_asc' ? 'selected' : '' %>>Price: Low to High</option>
+      <option value="price_desc" <%= f.sort === 'price_desc' ? 'selected' : '' %>>Price: High to Low</option>
+    </select>
+  </div>
+
+  <!-- Actions -->
+  <div class="d-grid gap-2 mt-4">
+    <button type="submit" class="btn btn-primary btn-sm">
+      <i class="fa-solid fa-magnifying-glass"></i> Apply Filters
+    </button>
+    <a href="/listings" class="btn btn-outline-secondary btn-sm">
+      <i class="fa-solid fa-rotate-left"></i> Clear Filters
+    </a>
+  </div>
+</form>
+

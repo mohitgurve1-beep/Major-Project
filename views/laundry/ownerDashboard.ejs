@@ -1,0 +1,92 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="dashboard-header">
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <div>
+      <h2><i class="fa-solid fa-shirt"></i> My Laundry Services</h2>
+      <p class="text-muted">Manage your laundry services</p>
+    </div>
+    <div class="d-flex gap-2">
+      <a href="/laundry/new" class="btn btn-dark"><i class="fa-solid fa-plus"></i> Add New Service</a>
+      <a href="/laundry" class="btn btn-outline-primary"><i class="fa-solid fa-shirt"></i> Browse Services</a>
+    </div>
+  </div>
+</div>
+
+<!-- Stats Cards Row -->
+<div class="row mb-4 g-3">
+  <div class="col-md-4">
+    <div class="dashboard-stat-card stat-card-total bg-light">
+      <div class="stat-icon"><i class="fa-solid fa-shirt"></i></div>
+      <div class="stat-number"><%= totalLaundries %></div>
+      <div class="stat-label">Total Services</div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="dashboard-stat-card stat-card-approved bg-light">
+      <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+      <div class="stat-number"><%= availableCount %></div>
+      <div class="stat-label">Available</div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="dashboard-stat-card stat-card-rejected bg-light">
+      <div class="stat-icon"><i class="fa-solid fa-circle-xmark"></i></div>
+      <div class="stat-number"><%= closedCount %></div>
+      <div class="stat-label">Closed</div>
+    </div>
+  </div>
+</div>
+
+<!-- Services List -->
+<% if(allLaundries.length === 0) { %>
+  <div class="text-center py-5">
+    <i class="fa-solid fa-shirt fa-3x text-muted mb-3"></i>
+    <h5 class="text-muted">You haven't listed any laundry services yet.</h5>
+    <a href="/laundry/new" class="btn btn-dark mt-2">List Your First Service</a>
+  </div>
+<% } else { %>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="fw-bold mb-0"><i class="fa-solid fa-list"></i> Your Services</h5>
+    <span class="text-muted" style="font-size: 0.9rem;"><%= allLaundries.length %> service(s)</span>
+  </div>
+  <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-4">
+    <% for(let laundry of allLaundries) { %>
+      <div class="col">
+        <div class="card laundry-card h-100 verification-card">
+          <div class="position-relative overflow-hidden">
+            <img src="<%= laundry.image.url %>" class="card-img-top" alt="<%= laundry.name %>">
+            <div class="laundry-card-badge">
+              <% if(laundry.availability === 'Available') { %>
+                <span class="badge bg-success">Available</span>
+              <% } else { %>
+                <span class="badge bg-secondary">Closed</span>
+              <% } %>
+            </div>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title"><%= laundry.name %></h5>
+            <p class="card-text mb-1">
+              <i class="fa-solid fa-location-dot" style="color: var(--primary);"></i>
+              <%= laundry.city || laundry.location || 'Location not set' %>
+            </p>
+            <p class="card-text mb-1">
+              <i class="fa-solid fa-clock" style="color: var(--primary);"></i>
+              <%= laundry.workingHours || 'N/A' %>
+            </p>
+            <p class="price-text mt-2">
+              &#8377;<%= laundry.washFoldPrice.toLocaleString("en-IN") %> <small style="font-size: 0.8rem; font-weight: 400; color: var(--text-secondary);">/ wash &amp; fold</small>
+            </p>
+          </div>
+          <div class="card-footer d-flex justify-content-between gap-2">
+            <a href="/laundry/<%= laundry._id %>" class="btn btn-outline-dark btn-sm flex-fill">View</a>
+            <a href="/laundry/<%= laundry._id %>/edit" class="btn btn-dark btn-sm flex-fill">Edit</a>
+            <form action="/laundry/<%= laundry._id %>?_method=DELETE" method="POST" class="flex-fill" onsubmit="return confirm('Are you sure you want to delete this laundry service?');">
+              <button class="btn btn-outline-danger btn-sm w-100">Delete</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    <% } %>
+  </div>
+<% } %>

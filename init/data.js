@@ -10,6 +10,14 @@ const sampleListings = [
     price: 1500,
     location: "Malibu",
     country: "United States",
+    // Phase 11 — filterable fields (additive sample values)
+    city: "Malibu",
+    roomType: "1BHK",
+    furnishing: "Fully Furnished",
+    genderPreference: "Anyone",
+    availability: "Available",
+    minimumStay: 3,
+    amenities: ["WiFi", "AC", "Attached Bathroom", "Parking", "Security"],
   },
   {
     title: "Modern Loft in Downtown",
@@ -22,6 +30,14 @@ const sampleListings = [
     price: 1200,
     location: "New York City",
     country: "United States",
+    // Phase 11 — filterable fields (additive sample values)
+    city: "New York",
+    roomType: "1RK",
+    furnishing: "Semi Furnished",
+    genderPreference: "Anyone",
+    availability: "Available",
+    minimumStay: 6,
+    amenities: ["WiFi", "Geyser", "Water Supply", "Housekeeping"],
   },
   {
     title: "Mountain Retreat",

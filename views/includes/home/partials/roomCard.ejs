@@ -1,0 +1,66 @@
+<%
+  // Reusable room card component.
+  // Usage: include("partials/roomCard.ejs", { room, distance, showType, showAmenities })
+  const rc = typeof room !== 'undefined' ? room : null;
+  const rcDistance = typeof distance !== 'undefined' ? distance : '';
+  const rcShowType = typeof showType !== 'undefined' ? showType : true;
+  const rcShowAmenities = typeof showAmenities !== 'undefined' ? showAmenities : true;
+  const rcRating = typeof rating !== 'undefined' ? rating : (4.5);
+  const rcReviews = typeof reviewsCount !== 'undefined' ? reviewsCount : (12);
+%>
+<% if(rc){ %>
+<div class="col home-col reveal">
+  <div class="home-room-card h-100">
+    <div class="home-room-media position-relative overflow-hidden">
+      <a href="/listings/<%= rc._id %>" class="d-block">
+        <img src="<%= rc.image.url %>" class="home-room-img" alt="<%= rc.title %>">
+      </a>
+      <div class="home-room-badges">
+        <span class="home-verified-badge"><i class="fa-solid fa-circle-check"></i> Verified</span>
+        <% if(rc.availability && rc.availability !== 'Available'){ %>
+          <span class="home-badge home-badge-<%= rc.availability === 'Reserved' ? 'warning' : 'grey' %>"><%= rc.availability %></span>
+        <% } else { %>
+          <span class="home-badge home-badge-green"><i class="fa-solid fa-circle"></i> Available</span>
+        <% } %>
+      </div>
+      <div class="home-wishlist-icon" data-id="<%= rc._id %>">
+        <i class="fa-regular fa-heart"></i>
+      </div>
+    </div>
+    <div class="home-room-body">
+      <div class="d-flex justify-content-between align-items-start mb-1">
+        <a href="/listings/<%= rc._id %>" class="home-room-title"><%= rc.title %></a>
+        <% if(rcDistance){ %><span class="home-room-distance"><i class="fa-solid fa-location-dot"></i> <%= rcDistance %></span><% } %>
+      </div>
+      <p class="home-room-loc mb-2">
+        <i class="fa-solid fa-location-dot"></i> <%= rc.location %><%= rc.city ? ', ' + rc.city : '' %>
+      </p>
+      <% if(rcShowType && rc.roomType){ %>
+        <p class="home-room-meta mb-2">
+          <span><i class="fa-solid fa-bed"></i> <%= rc.roomType %></span>
+          <% if(rc.furnishing){ %><span><i class="fa-solid fa-couch"></i> <%= rc.furnishing %></span><% } %>
+          <% if(rc.genderPreference){ %><span><i class="fa-solid fa-people-group"></i> <%= rc.genderPreference %></span><% } %>
+        </p>
+      <% } %>
+      <% if(rcShowAmenities && rc.amenities && rc.amenities.length){ %>
+        <div class="home-room-amenities mb-2">
+          <% for(let a of rc.amenities.slice(0,3)){ %>
+            <span class="home-amenity-tag"><i class="fa-solid fa-check"></i> <%= a %></span>
+          <% } %>
+          <% if(rc.amenities.length > 3){ %><span class="home-amenity-tag">+<%= rc.amenities.length - 3 %> more</span><% } %>
+        </div>
+      <% } %>
+      <div class="d-flex justify-content-between align-items-center mt-auto pt-2">
+        <div class="home-price">&#8377;<%= rc.price.toLocaleString("en-IN") %><span>/mo</span></div>
+        <div class="home-rating">
+          <i class="fa-solid fa-star"></i> <%= rcRating %>
+          <small>(<%= rcReviews %>)</small>
+        </div>
+      </div>
+    </div>
+    <div class="home-room-foot">
+      <a href="/listings/<%= rc._id %>" class="home-btn-primary btn-sm"><i class="fa-solid fa-eye"></i> View Details</a>
+    </div>
+  </div>
+</div>
+<% } %>

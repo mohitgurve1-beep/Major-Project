@@ -1,0 +1,81 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="fw-bold"><i class="fa-regular fa-bell"></i> Notifications</h2>
+      <p class="text-muted">Stay updated with your account activity</p>
+    </div>
+    <% if(typeof notifications !== 'undefined' && notifications.length > 0) { %>
+      <form action="/notifications/read-all" method="POST">
+        <button class="btn btn-outline-primary" style="border-radius: 50px;">
+          <i class="fa-regular fa-check-double"></i> Mark All Read
+        </button>
+      </form>
+    <% } %>
+  </div>
+
+  <% if(typeof notifications === 'undefined' || notifications.length === 0) { %>
+    <div class="text-center py-5">
+      <i class="fa-regular fa-bell-slash fa-4x text-muted mb-3"></i>
+      <h5 class="text-muted">No notifications yet</h5>
+      <p class="text-muted">When you receive notifications, they will appear here.</p>
+    </div>
+  <% } else { %>
+    <div class="row g-3">
+      <% for(let notif of notifications) { %>
+        <div class="col-12 reveal">
+          <div class="notif-page-card <%= !notif.isRead ? 'unread' : '' %>">
+            <div class="d-flex align-items-start gap-3">
+              <!-- Icon -->
+              <div class="notif-page-icon" style="background: <%= !notif.isRead ? 'var(--primary-light)' : '#f1f3f5' %>; color: <%= !notif.isRead ? 'var(--primary)' : 'var(--text-muted)' %>;">
+                <% if(notif.type === 'new_visit_request' || notif.type === 'visit_request_accepted') { %>
+                  <i class="fa-solid fa-calendar-check"></i>
+                <% } else if(notif.type === 'visit_request_rejected' || notif.type === 'visit_cancelled') { %>
+                  <i class="fa-solid fa-calendar-xmark"></i>
+                <% } else if(notif.type === 'new_review') { %>
+                  <i class="fa-solid fa-star"></i>
+                <% } else { %>
+                  <i class="fa-regular fa-bell"></i>
+                <% } %>
+              </div>
+
+              <!-- Content -->
+              <div class="flex-grow-1">
+                <div class="d-flex justify-content-between align-items-start">
+                  <div>
+                    <div class="notif-page-title"><%= notif.title %></div>
+                    <div class="notif-page-message mt-1"><%= notif.message %></div>
+                  </div>
+                  <% if(!notif.isRead) { %>
+                    <span class="badge bg-primary" style="font-size: 0.6rem; border-radius: 50px;">New</span>
+                  <% } %>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                  <div class="notif-page-time">
+                    <i class="fa-regular fa-clock"></i>
+                    <%= typeof timeAgo === 'function' ? timeAgo(notif.createdAt) : new Date(notif.createdAt).toLocaleDateString() %>
+                  </div>
+                  <div class="d-flex gap-2">
+                    <% if(notif.link) { %>
+                      <a href="<%= notif.link %>" class="btn btn-sm btn-outline-dark" style="border-radius: 50px; font-size: 0.75rem;">
+                        <i class="fa-solid fa-arrow-right"></i> View
+                      </a>
+                    <% } %>
+                    <% if(!notif.isRead) { %>
+                      <form action="/notifications/<%= notif._id %>/read" method="POST" style="display:inline;">
+                        <button class="btn btn-sm btn-outline-primary" style="border-radius: 50px; font-size: 0.75rem;">
+                          <i class="fa-regular fa-check"></i> Mark Read
+                        </button>
+                      </form>
+                    <% } %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% } %>
+    </div>
+  <% } %>
+</div>

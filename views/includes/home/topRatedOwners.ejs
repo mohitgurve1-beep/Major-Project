@@ -1,0 +1,54 @@
+<%
+  // Top Rated Property Owners (Feature 5).
+  // Gracefully hides if no owner data is available.
+  const ownerListings = typeof allListings !== 'undefined' ? allListings : [];
+  const ownerMap = {};
+  ownerListings.forEach(l => {
+    if (l.owner && l.owner._id) {
+      const id = l.owner._id.toString ? l.owner._id.toString() : String(l.owner._id);
+      if (!ownerMap[id]) {
+        ownerMap[id] = {
+          id: id,
+          name: l.owner.username || 'Owner',
+          role: l.owner.role || 'owner',
+          count: 0,
+        };
+      }
+      ownerMap[id].count += 1;
+    }
+  });
+  const topOwners = Object.values(ownerMap).slice(0, 4);
+%>
+<% if(topOwners.length){ %>
+<section class="home-section home-owners">
+  <div class="container">
+    <%- include("partials/sectionHeader.ejs", {
+      title: "Top Rated Property Owners",
+      subtitle: "Trusted landlords verified by students",
+    }) %>
+    <div class="row g-4">
+      <% topOwners.forEach((o, idx) => { %>
+        <div class="col-6 col-md-6 col-lg-3">
+          <div class="home-owner-card h-100">
+            <div class="home-owner-avatar"><%= (o.name || 'O').charAt(0).toUpperCase() %></div>
+            <div class="home-owner-name"><%= o.name %></div>
+            <div class="home-owner-role"><i class="fa-solid fa-house"></i> Property Owner</div>
+            <div class="home-owner-rating">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+              <span>4.8</span>
+            </div>
+            <div class="home-owner-meta">
+              <span><i class="fa-solid fa-bed"></i> <%= o.count %> properties</span>
+              <span><i class="fa-solid fa-bolt"></i> 95% response</span>
+            </div>
+            <span class="home-verified-badge"><i class="fa-solid fa-circle-check"></i> Verified</span>
+            <button class="home-btn-outline btn-sm w-100" onclick="alert('Owner profile: <%= encodeURIComponent(o.name) %>')">
+              View Profile <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+</section>
+<% } %>

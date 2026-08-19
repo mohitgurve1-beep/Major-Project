@@ -1,52 +1,105 @@
-<style>
-  .search-btn {
-    background-color: #fe424d;
-    color: #fff;
-    border-radius: 25px;
-    padding: 1 1rem 0 1rem;
-  }
-  .search-btn:hover {
-    background-color: #fe424d;
-    color: #fff;
-  }
-  .search-btn i{
-    display: inline;
-    margin-right: 0.5rem;
-  }
-  .search-inp{
-    border-radius: 25px;
-    padding: 0.5rem 3rem 0.5rem 3rem;
-    font-size: 1rem;
-  }
-</style>
-
-
-<nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="/listings"><i class="fa-regular fa-compass"></i></a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup">
+<%- include("./home/topbar.ejs") %>
+<nav class="navbar navbar-expand-lg bg-body-light border-bottom sticky-top home-navbar" id="mainNavbar">
+    <div class="container">
+      <a class="navbar-brand home-brand" href="/listings">
+        <span class="home-brand-icon"><i class="fa-solid fa-graduation-cap"></i></span>
+        <span class="home-brand-text">Student<span>Stay</span></span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav">
-          <a class="nav-link" href="/listings">Explore</a>
+        <div class="navbar-nav mx-auto">
+          <a class="nav-link <%= (typeof q !== 'undefined' && !q) ? 'active' : '' %>" href="/listings">Home</a>
+          <a class="nav-link" href="/listings">Listings</a>
+          <a class="nav-link" href="/messes">Mess</a>
+<a class="nav-link" href="/laundry">Laundry</a>
+          <a class="nav-link" href="/vehicles">Vehicles</a>
+          <a class="nav-link" href="#homeAbout">About Us</a>
+          <a class="nav-link" href="#homeContact">Contact</a>
         </div>
-        <div class="navbar-nav ms-auto">
-          <form class="d-flex" role="search">
-            <input class="form-control me-2 search-inp" type="search" placeholder="Search destinations"/>
-            <button class="btn search-btn" type="submit"><i class="fa-solid fa-magnifying-glass"></i>Search</button>
-          </form>
+
+        <div class="navbar-nav align-items-center gap-2 home-nav-actions">
+          <% if(currUser && currUser.role === 'owner') { %>
+            <a class="home-btn-primary btn-sm home-list-btn" href="/listings/new">
+              <i class="fa-solid fa-plus"></i> List Your Property
+            </a>
+          <% } else if(!currUser){ %>
+            <a class="home-btn-primary btn-sm home-list-btn" href="/listings/new">
+              <i class="fa-solid fa-plus"></i> List Your Property
+            </a>
+          <% } %>
+
+          <!-- Wishlist -->
+          <a class="home-nav-icon position-relative" href="/listings" title="Wishlist" aria-label="Wishlist">
+            <i class="fa-regular fa-heart"></i>
+          </a>
+
+          <% if(currUser){ %>
+            <!-- Notification Bell -->
+            <div class="nav-item dropdown">
+              <a class="home-nav-icon notification-bell position-relative" href="#" id="notifDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa-regular fa-bell"></i>
+                <% if(typeof unreadNotifications !== 'undefined' && unreadNotifications > 0){ %>
+                  <span class="notification-badge"><%= unreadNotifications %></span>
+                <% } %>
+              </a>
+              <div class="dropdown-menu dropdown-menu-end notif-dropdown" aria-labelledby="notifDropdown">
+                <div class="notif-dropdown-header">
+                  <span>Notifications</span>
+                  <% if(typeof unreadNotifications !== 'undefined' && unreadNotifications > 0){ %>
+                    <form action="/notifications/read-all" method="POST" style="display:inline;">
+                      <button class="btn btn-sm btn-outline-primary" style="border-radius: 50px; font-size: 0.75rem;">Mark all read</button>
+                    </form>
+                  <% } %>
+                </div>
+                <% if(typeof latestNotifications !== 'undefined' && latestNotifications.length > 0){ %>
+                  <% for(let notif of latestNotifications) { %>
+                    <a href="<%= notif.link || '/notifications' %>" class="dropdown-item notif-item <%= !notif.isRead ? 'unread' : '' %>">
+                      <div class="notif-title"><%= notif.title %></div>
+                      <div class="notif-message"><%= notif.message %></div>
+                      <div class="notif-time"><%= typeof timeAgo === 'function' ? timeAgo(notif.createdAt) : '' %></div>
+                    </a>
+                  <% } %>
+                <% } else { %>
+                  <div class="text-center py-3 text-muted" style="font-size: 0.85rem;">
+                    <i class="fa-regular fa-bell-slash mb-2" style="font-size: 1.5rem; display: block;"></i>
+                    No notifications yet
+                  </div>
+                <% } %>
+                <div class="notif-dropdown-footer">
+                  <a href="/notifications" class="text-decoration-none" style="font-size: 0.85rem; color: var(--primary);">View all notifications</a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Profile Dropdown -->
+            <div class="nav-item dropdown">
+              <a class="nav-link" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <div class="profile-avatar">
+                  <%= currUser.username.charAt(0).toUpperCase() %>
+                </div>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown" style="border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); border: none; min-width: 200px;">
+                <li class="dropdown-header text-center">
+                  <strong><%= currUser.username %></strong><br>
+                  <small class="text-muted"><%= currUser.email %></small>
+                  <br>
+                  <span class="badge bg-<%= currUser.role === 'admin' ? 'danger' : currUser.role === 'owner' ? 'warning text-dark' : 'info text-dark' %> mt-1"><%= currUser.role %></span>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="/notifications"><i class="fa-regular fa-bell"></i> Notifications</a></li>
+                <% if(currUser.role === 'owner') { %>
+                  <li><a class="dropdown-item" href="/listings/owner/dashboard"><i class="fa-solid fa-gauge-high"></i> Dashboard</a></li>
+                <% } %>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item text-danger" href="/logout"><i class="fa-solid fa-right-from-bracket"></i> Log out</a></li>
+              </ul>
+            </div>
+          <% } else { %>
+            <a class="home-btn-outline btn-sm" href="/login"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
+            <a class="home-btn-primary btn-sm" href="/signup"><i class="fa-solid fa-user-plus"></i> Sign Up</a>
+          <% } %>
         </div>
-        <div class="navbar-nav ms-auto">
-          <a class="nav-link" href="/listings/new">Airbnb your home</a>
-          <% if(!currUser){%>
-          <a class="nav-link "  href="/signup"><b>Sign Up</b></a>
-          <a class="nav-link" href="/login"><b>Log in</b></a>
-          <%}%>
-          <% if(currUser){%>
-          <a class="nav-link" href="/logout"><b>Log out</b></a>
-          <%}%>
-        </div>
-      </div>
     </div>
   </nav>

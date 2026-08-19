@@ -1,0 +1,133 @@
+<% layout("/layouts/boilerplate") %>
+<div class="row mt-3">
+    <div class="col-12 col-md-10 col-lg-8 mx-auto">
+        <h3><i class="fa-solid fa-car"></i> Add a New Vehicle</h3>
+        <p class="text-muted">Provide details about your car or bike so students can find and rent it.</p>
+        <form action="/vehicles" method="POST" novalidate class="needs-validation" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="name" class="form-label">Vehicle Name *</label>
+                <input type="text" name="vehicle[name]" id="name" placeholder="e.g. Honda Activa 2022" class="form-control" required>
+                <div class="invalid-feedback">Please provide a vehicle name.</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea name="vehicle[description]" id="description" class="form-control" rows="3" placeholder="Short description of the vehicle and its condition"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="image" class="form-label">Upload vehicle image</label>
+                <input type="file" name="vehicle[image]" id="image" class="form-control" required>
+                <div class="invalid-feedback">Please upload a vehicle image.</div>
+            </div>
+
+            <div class="row">
+                <div class="mb-3 col-md-6">
+                    <label for="vehicleType" class="form-label">Vehicle Type</label>
+                    <select name="vehicle[vehicleType]" id="vehicleType" class="form-select">
+                        <option value="">Select Type</option>
+                        <% for(let t of vehicleTypes) { %>
+                            <option value="<%= t %>"><%= t %></option>
+                        <% } %>
+                    </select>
+                </div>
+                <div class="mb-3 col-md-6">
+                    <label for="brand" class="form-label">Brand</label>
+                    <input type="text" name="vehicle[brand]" id="brand" placeholder="e.g. Honda" class="form-control">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="mb-3 col-md-6">
+                    <label for="model" class="form-label">Model</label>
+                    <input type="text" name="vehicle[model]" id="model" placeholder="e.g. Activa 2022" class="form-control">
+                </div>
+                <div class="mb-3 col-md-6">
+                    <label for="fuelType" class="form-label">Fuel Type</label>
+                    <select name="vehicle[fuelType]" id="fuelType" class="form-select">
+                        <option value="">Select Fuel</option>
+                        <% for(let t of fuelTypes) { %>
+                            <option value="<%= t %>"><%= t %></option>
+                        <% } %>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="mb-3 col-md-4">
+                    <label for="dailyPrice" class="form-label">Daily Price (&#8377;) *</label>
+                    <input type="number" name="vehicle[dailyPrice]" id="dailyPrice" placeholder="e.g. 500" min="0" class="form-control" required>
+                    <div class="invalid-feedback">Daily price should be valid.</div>
+                </div>
+                <div class="mb-3 col-md-4">
+                    <label for="weeklyPrice" class="form-label">Weekly Price (&#8377;)</label>
+                    <input type="number" name="vehicle[weeklyPrice]" id="weeklyPrice" placeholder="e.g. 3000" min="0" class="form-control">
+                </div>
+                <div class="mb-3 col-md-4">
+                    <label for="monthlyPrice" class="form-label">Monthly Price (&#8377;)</label>
+                    <input type="number" name="vehicle[monthlyPrice]" id="monthlyPrice" placeholder="e.g. 10000" min="0" class="form-control">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="mb-3 col-md-4">
+                    <label for="seats" class="form-label">Seats</label>
+                    <input type="number" name="vehicle[seats]" id="seats" placeholder="e.g. 2 or 5" min="1" max="20" class="form-control">
+                </div>
+                <div class="mb-3 col-md-4">
+                    <label for="gearType" class="form-label">Gear Type</label>
+                    <select name="vehicle[gearType]" id="gearType" class="form-select">
+                        <option value="">Select Gear</option>
+                        <% for(let g of gearTypes) { %>
+                            <option value="<%= g %>"><%= g %></option>
+                        <% } %>
+                    </select>
+                </div>
+                <div class="mb-3 col-md-4">
+                    <label for="mileage" class="form-label">Mileage</label>
+                    <input type="text" name="vehicle[mileage]" id="mileage" placeholder="e.g. 45 kmpl" class="form-control">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="mb-3 col-md-6">
+                    <label for="address" class="form-label">Address</label>
+                    <input type="text" name="vehicle[address]" id="address" placeholder="Street, building, landmark" class="form-control">
+                </div>
+                <div class="mb-3 col-md-6">
+                    <label for="city" class="form-label">City</label>
+                    <input type="text" name="vehicle[city]" id="city" placeholder="e.g. Nagpur" class="form-control">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="mb-3 col-md-6">
+                    <label for="location" class="form-label">Area / Location</label>
+                    <input type="text" name="vehicle[location]" id="location" placeholder="e.g. Trimurti Nagar" class="form-control">
+                </div>
+                <div class="mb-3 col-md-6">
+                    <label for="contactNumber" class="form-label">Contact Number</label>
+                    <input type="text" name="vehicle[contactNumber]" id="contactNumber" placeholder="+91 98765 43210" class="form-control">
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="mapLocation" class="form-label">Google Map Location</label>
+                <input type="text" name="vehicle[mapLocation]" id="mapLocation" placeholder="Google Maps link or coordinates" class="form-control">
+            </div>
+
+            <div class="mb-3">
+                <label for="availability" class="form-label">Availability</label>
+                <select name="vehicle[availability]" id="availability" class="form-select">
+                    <option value="">Select Availability</option>
+                    <% for(let o of availabilityOptions) { %>
+                        <option value="<%= o %>"><%= o %></option>
+                    <% } %>
+                </select>
+            </div>
+
+            <button class="btn btn-dark add-btn mt-3"><i class="fa-solid fa-plus"></i> Add Vehicle</button>
+            <a href="/vehicles" class="btn btn-outline-secondary mt-3">Cancel</a>
+        </form>
+    </div>
+</div>

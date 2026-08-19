@@ -1,0 +1,76 @@
+<!-- ============================================ -->
+<!-- MESS SEARCH & FILTER SIDEBAR                 -->
+<!-- ============================================ -->
+<%
+  const f = typeof filters !== 'undefined' ? filters : {};
+  const mt = typeof mealTypes !== 'undefined' ? mealTypes : ['Veg', 'Non-Veg', 'Both'];
+  const ao = typeof availabilityOptions !== 'undefined' ? availabilityOptions : ['Available', 'Closed'];
+%>
+
+<form action="/messes" method="GET" class="filter-form">
+  <!-- Search by name / description / city / area -->
+  <div class="filter-group">
+    <label class="filter-label" for="messQ">Search</label>
+    <div class="input-group input-group-sm">
+      <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
+      <input type="text" class="form-control" id="messQ" name="q" placeholder="Name, city, area..." value="<%= f.q || '' %>">
+    </div>
+  </div>
+
+  <!-- City -->
+  <div class="filter-group">
+    <label class="filter-label" for="messCity">City</label>
+    <input type="text" class="form-control form-control-sm" id="messCity" name="city" placeholder="e.g. Nagpur" value="<%= f.city || '' %>">
+  </div>
+
+  <!-- Location / Area -->
+  <div class="filter-group">
+    <label class="filter-label" for="messLocation">Area / Location</label>
+    <input type="text" class="form-control form-control-sm" id="messLocation" name="location" placeholder="e.g. Trimurti Nagar" value="<%= f.location || '' %>">
+  </div>
+
+  <!-- Monthly Price (Min/Max) -->
+  <div class="filter-group">
+    <label class="filter-label">Monthly Price (&#8377;)</label>
+    <div class="row g-2">
+      <div class="col-6">
+        <input type="number" class="form-control form-control-sm" name="minPrice" placeholder="Min" min="0" value="<%= f.minPrice || '' %>">
+      </div>
+      <div class="col-6">
+        <input type="number" class="form-control form-control-sm" name="maxPrice" placeholder="Max" min="0" value="<%= f.maxPrice || '' %>">
+      </div>
+    </div>
+  </div>
+
+  <!-- Meal Type -->
+  <div class="filter-group">
+    <label class="filter-label">Meal Type</label>
+    <select name="mealType" class="form-select form-select-sm">
+      <option value="">All Meal Types</option>
+      <% for(let t of mt) { %>
+        <option value="<%= t %>" <%= f.mealType === t ? 'selected' : '' %>><%= t %></option>
+      <% } %>
+    </select>
+  </div>
+
+  <!-- Availability -->
+  <div class="filter-group">
+    <label class="filter-label">Availability</label>
+    <select name="availability" class="form-select form-select-sm">
+      <option value="">Any Availability</option>
+      <% for(let o of ao) { %>
+        <option value="<%= o %>" <%= f.availability === o ? 'selected' : '' %>><%= o %></option>
+      <% } %>
+    </select>
+  </div>
+
+  <!-- Actions -->
+  <div class="d-grid gap-2 mt-4">
+    <button type="submit" class="btn btn-primary btn-sm">
+      <i class="fa-solid fa-magnifying-glass"></i> Apply Filters
+    </button>
+    <a href="/messes" class="btn btn-outline-secondary btn-sm">
+      <i class="fa-solid fa-rotate-left"></i> Clear Filters
+    </a>
+  </div>
+</form>

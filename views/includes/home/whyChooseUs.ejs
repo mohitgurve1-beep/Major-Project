@@ -1,0 +1,29 @@
+<%
+  // Why Choose Us (Section 8) — responsive feature cards.
+  const features = [
+    { icon: "fa-shield-check",    title: "Verified Listings",    desc: "Every room is verified by our team for genuine photos and accurate details." },
+    { icon: "fa-indian-rupee-sign", title: "Affordable Prices",  desc: "Transparent pricing with no hidden charges or brokerage fees." },
+    { icon: "fa-calendar-check",  title: "Easy Visit Booking",   desc: "Schedule a visit in a few clicks and see the room before you commit." },
+    { icon: "fa-headset",         title: "24×7 Support",         desc: "Our support team is always available to help you with any questions." },
+  ];
+%>
+<section class="home-why">
+  <div class="container">
+    <%- include("partials/sectionHeader.ejs", {
+      title: "Why Choose Us",
+      subtitle: "We make student accommodation simple, safe, and stress-free",
+      center: true,
+    }) %>
+    <div class="row g-4">
+      <% features.forEach((f, i) => { %>
+        <div class="col-6 col-md-6 col-lg-3">
+          <div class="home-feature-card reveal reveal-delay-<%= i %>">
+            <div class="home-feature-icon"><i class="fa-solid <%= f.icon %>"></i></div>
+            <h5><%= f.title %></h5>
+            <p><%= f.desc %></p>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+</section>

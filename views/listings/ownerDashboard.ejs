@@ -1,0 +1,95 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="container">
+
+<div class="dashboard-header">
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <div>
+      <h2><i class="fa-solid fa-gauge-high"></i> Owner Dashboard</h2>
+      <p class="text-muted">Manage your rental properties</p>
+    </div>
+<div class="d-flex gap-2">
+      <a href="/listings/new" class="btn btn-dark"><i class="fa-solid fa-plus"></i> Add New Room</a>
+<a href="/listings/owner/visit-requests" class="btn btn-outline-primary"><i class="fa-solid fa-calendar-check"></i> Visit Requests</a>
+<a href="/messes/owner/dashboard" class="btn btn-outline-success"><i class="fa-solid fa-utensils"></i> My Messes</a>
+      <a href="/laundry/owner/dashboard" class="btn btn-outline-info"><i class="fa-solid fa-shirt"></i> My Laundry</a>
+      <a href="/vehicles/owner/dashboard" class="btn btn-outline-warning"><i class="fa-solid fa-car"></i> My Vehicles</a>
+    </div>
+  </div>
+</div>
+
+<!-- Stats Cards Row -->
+<div class="row mb-4 g-3">
+  <div class="col-md-4">
+    <div class="dashboard-stat-card stat-card-total bg-light">
+      <div class="stat-icon"><i class="fa-solid fa-door-open"></i></div>
+      <div class="stat-number"><%= totalRooms %></div>
+      <div class="stat-label">Total Rooms</div>
+    </div>
+  </div>
+</div>
+
+<!-- Chart Placeholder -->
+<div class="row mb-4">
+  <div class="col-md-8">
+    <div class="chart-placeholder">
+      <div class="chart-icon"><i class="fa-solid fa-chart-line"></i></div>
+      <div class="chart-text mb-2">Monthly Views & Inquiries</div>
+      <div class="chart-bars">
+        <div class="bar" style="height: 120px; background: var(--primary);"></div>
+        <div class="bar" style="height: 90px; background: var(--accent);"></div>
+        <div class="bar" style="height: 140px; background: var(--success);"></div>
+        <div class="bar" style="height: 100px; background: var(--warning);"></div>
+        <div class="bar" style="height: 160px; background: var(--primary);"></div>
+        <div class="bar" style="height: 130px; background: var(--accent);"></div>
+      </div>
+      <div class="chart-text mt-2 text-muted" style="font-size: 0.8rem;">Jan | Feb | Mar | Apr | May | Jun</div>
+    </div>
+  </div>
+</div>
+
+<!-- Rooms List -->
+<% if(allListings.length === 0) { %>
+  <div class="text-center py-5">
+    <i class="fa-solid fa-bed fa-3x text-muted mb-3"></i>
+    <h5 class="text-muted">You haven't listed any rooms yet.</h5>
+    <a href="/listings/new" class="btn btn-dark mt-2">List Your First Room</a>
+  </div>
+<% } else { %>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="fw-bold mb-0"><i class="fa-solid fa-list"></i> Your Rooms</h5>
+    <span class="text-muted" style="font-size: 0.9rem;"><%= allListings.length %> room(s)</span>
+  </div>
+  <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-4">
+    <% for(let listing of allListings) { %>
+      <div class="col">
+        <div class="card listing-card h-100 verification-card">
+          <div class="position-relative overflow-hidden">
+            <img src="<%= listing.image.url %>" class="card-img-top" alt="<%= listing.title %>">
+          </div>
+          <div class="card-body">
+            <h5 class="card-title"><%= listing.title %></h5>
+            <p class="card-text mb-1">
+              <i class="fa-solid fa-location-dot" style="color: var(--primary);"></i>
+              <%= listing.location %>, <%= listing.country %>
+            </p>
+            <p class="price-text mt-2">
+              &#8377;<%= listing.price.toLocaleString("en-IN") %> <small style="font-size: 0.8rem; font-weight: 400; color: var(--text-secondary);">/ month</small>
+            </p>
+            <p class="card-text small text-muted">
+              <i class="fa-regular fa-calendar"></i> Listed on <%= listing._id.getTimestamp().toLocaleDateString("en-IN", { year: 'numeric', month: 'short', day: 'numeric' }) %>
+            </p>
+          </div>
+          <div class="card-footer d-flex justify-content-between gap-2">
+            <a href="/listings/<%= listing._id %>" class="btn btn-outline-dark btn-sm flex-fill">View</a>
+            <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark btn-sm flex-fill">Edit</a>
+            <form action="/listings/<%= listing._id %>?_method=DELETE" method="POST" class="flex-fill" onsubmit="return confirm('Are you sure?');">
+              <button class="btn btn-outline-danger btn-sm w-100">Delete</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    <% } %>
+  </div>
+<% } %>
+</div>

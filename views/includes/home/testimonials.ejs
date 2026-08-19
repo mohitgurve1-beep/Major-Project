@@ -1,0 +1,42 @@
+<%
+  // Student Testimonials (Section 9) — responsive slider.
+  const tmonials = typeof testimonials !== 'undefined' ? testimonials : [];
+  const collegeMap = { 'Student, IIT Bombay': 'IIT Bombay', 'Student, Delhi University': 'Delhi University', 'Student, VIT Vellore': 'VIT Vellore' };
+%>
+<section class="home-testimonials">
+  <div class="container">
+    <%- include("partials/sectionHeader.ejs", {
+      title: "What Students Say",
+      subtitle: "Hear from students who found their perfect home",
+      center: true,
+    }) %>
+    <% if(tmonials.length){ %>
+      <div id="testimonialsCarousel" class="carousel slide home-testimonial-carousel" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <% tmonials.forEach((t, i) => { %>
+            <div class="carousel-item <%= i === 0 ? 'active' : '' %>">
+              <div class="home-testimonial-card text-center mx-auto">
+                <div class="home-testimonial-quote"><i class="fa-solid fa-quote-left"></i></div>
+                <div class="home-testimonial-stars">
+                  <% for(let s = 1; s <= 5; s++){ %>
+                    <i class="fa-solid fa-star <%= s <= t.rating ? '' : 'empty' %>"></i>
+                  <% } %>
+                </div>
+                <p class="home-testimonial-text"><%= t.text %></p>
+                <div class="home-testimonial-avatar"><%= (t.name || 'S').charAt(0) %></div>
+                <div class="home-testimonial-name"><%= t.name %></div>
+                <div class="home-testimonial-role"><%= t.role %></div>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+        <button class="carousel-control-prev home-testimonial-ctrl" type="button" data-bs-target="#testimonialsCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        </button>
+        <button class="carousel-control-next home-testimonial-ctrl" type="button" data-bs-target="#testimonialsCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        </button>
+      </div>
+    <% } %>
+  </div>
+</section>

@@ -1,0 +1,165 @@
+<% layout("/layouts/boilerplate") %>
+
+<!-- ============================================ -->
+<!-- MESS HERO SECTION                            -->
+<!-- ============================================ -->
+<section class="mess-hero-section">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-7">
+        <div class="mess-hero-content">
+          <span class="mess-hero-badge"><i class="fa-solid fa-utensils"></i> Student Messes</span>
+          <h1>
+            Find Healthy &amp; Affordable<br>
+            <span class="highlight">Mess Meals Near You</span>
+          </h1>
+          <p>Discover verified messes offering home-style veg &amp; non-veg meals for students. Affordable monthly plans, fresh food, and convenient locations.</p>
+
+          <!-- Mess Search -->
+          <form class="mess-hero-search" action="/messes" method="GET">
+            <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+            <input type="text" name="q" placeholder="Search by mess name, city, or area..." value="<%= typeof filters !== 'undefined' ? filters.q : '' %>">
+            <button class="mess-hero-search-btn" type="submit">Search Messes</button>
+          </form>
+
+          <!-- Mess Stats -->
+          <div class="mess-hero-stats">
+            <div class="stat-item">
+              <div class="stat-number"><%= typeof stats !== 'undefined' ? stats.totalMesses : 0 %>+</div>
+              <div class="stat-label">Messes</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number"><%= typeof stats !== 'undefined' ? stats.totalCities : 0 %></div>
+              <div class="stat-label">Cities</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number"><%= typeof stats !== 'undefined' ? stats.totalOwners : 0 %>+</div>
+              <div class="stat-label">Trusted Owners</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="mess-hero-image-wrapper">
+          <img src="https://images.unsplash.com/photo-1547592180-85f173990554?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Healthy student mess food" class="img-fluid">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- MESS LISTINGS + SEARCH & FILTERS             -->
+<!-- ============================================ -->
+<div class="container mt-4 mb-5">
+  <!-- Section Header + Mobile Filter Toggle -->
+  <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+    <div>
+      <h2 class="section-title mb-1">Explore Messes</h2>
+      <p class="text-muted mb-0">Showing <%= typeof allMesses !== 'undefined' ? allMesses.length : 0 %> mess(es)</p>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <!-- Mobile: Open filter drawer -->
+      <button class="btn btn-outline-dark d-lg-none" style="border-radius: 50px; font-size: 0.9rem;" type="button" data-bs-toggle="offcanvas" data-bs-target="#messFilterDrawer" aria-controls="messFilterDrawer">
+        <i class="fa-solid fa-sliders"></i> Filters
+      </button>
+    </div>
+  </div>
+
+  <!-- Active Filter Chips -->
+  <% if(typeof activeFilters !== 'undefined' && activeFilters.length > 0) { %>
+    <div class="active-filter-chips mb-3">
+      <% for(let chip of activeFilters) { %>
+        <a href="<%= chip.href %>" class="filter-chip">
+          <%= chip.label %>
+          <i class="fa-solid fa-xmark"></i>
+        </a>
+      <% } %>
+      <a href="/messes" class="filter-chip filter-chip-clear">
+        <i class="fa-solid fa-rotate-left"></i> Clear All
+      </a>
+    </div>
+  <% } %>
+
+  <!-- Results grid: sidebar + messes -->
+  <div class="row g-4">
+    <!-- Desktop Filter Sidebar -->
+    <div class="col-lg-3 d-none d-lg-block">
+      <div class="filter-sidebar">
+        <h6 class="filter-sidebar-title"><i class="fa-solid fa-sliders"></i> Filters</h6>
+        <%- include("./includes/searchSidebar.ejs") %>
+      </div>
+    </div>
+
+    <!-- Messes Column -->
+    <div class="col-lg-9">
+      <% if(typeof allMesses === 'undefined' || allMesses.length === 0) { %>
+        <!-- Professional Empty State -->
+        <div class="empty-state text-center py-5">
+          <div class="empty-state-illustration">
+            <i class="fa-solid fa-utensils"></i>
+          </div>
+          <h4>No messes found</h4>
+          <p class="text-muted">We couldn't find any messes matching your search and filters.<br>Try adjusting your filters or clearing them to see more options.</p>
+          <a href="/messes" class="btn btn-primary">
+            <i class="fa-solid fa-rotate-left"></i> Clear Filters
+          </a>
+        </div>
+      <% } else { %>
+        <div class="row g-4">
+          <% for(let mess of allMesses) { %>
+            <div class="col-12 col-md-6 col-lg-4 reveal">
+              <a href="/messes/<%= mess._id %>" class="mess-link">
+                <div class="card mess-card h-100">
+                  <div class="position-relative overflow-hidden">
+                    <img src="<%= mess.image.url %>" class="card-img-top" alt="<%= mess.name %>">
+                    <div class="mess-card-badge">
+                      <% if(mess.availability === 'Available') { %>
+                        <span class="badge bg-success">Available</span>
+                      <% } else { %>
+                        <span class="badge bg-secondary">Closed</span>
+                      <% } %>
+                    </div>
+                    <div class="mess-meal-badge">
+                      <span class="badge bg-primary"><%= mess.mealType %></span>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <h5 class="card-title"><%= mess.name %></h5>
+                    <p class="card-text mb-1">
+                      <i class="fa-solid fa-location-dot" style="color: var(--primary);"></i>
+                      <%= mess.city || mess.location || 'Location not set' %>
+                    </p>
+                    <p class="card-text mb-1 text-muted small">
+                      <i class="fa-solid fa-clock" style="color: var(--primary);"></i>
+                      <%= mess.timing || 'Timing not set' %>
+                    </p>
+                    <div class="mess-meals mt-2">
+                      <% if(mess.breakfast) { %><span class="mess-meal-tag"><i class="fa-solid fa-mug-hot"></i> Breakfast</span><% } %>
+                      <% if(mess.lunch) { %><span class="mess-meal-tag"><i class="fa-solid fa-bowl-food"></i> Lunch</span><% } %>
+                      <% if(mess.dinner) { %><span class="mess-meal-tag"><i class="fa-solid fa-utensils"></i> Dinner</span><% } %>
+                    </div>
+                    <p class="price-text mt-2 mb-0">
+                      &#8377;<%= mess.monthlyPrice.toLocaleString("en-IN") %> <small style="font-size: 0.8rem; font-weight: 400; color: var(--text-secondary);">/ month</small>
+                    </p>
+                  </div>
+                </div>
+              </a>
+            </div>
+          <% } %>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile Filter Drawer (Bootstrap Offcanvas) -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="messFilterDrawer" aria-labelledby="messFilterDrawerLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="messFilterDrawerLabel"><i class="fa-solid fa-sliders"></i> Filter Messes</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <%- include("./includes/searchSidebar.ejs") %>
+  </div>
+</div>

@@ -1,0 +1,104 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="dashboard-header">
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <div>
+      <h2><i class="fa-solid fa-car"></i> My Vehicles</h2>
+      <p class="text-muted">Manage your rental vehicles</p>
+    </div>
+    <div class="d-flex gap-2">
+      <a href="/vehicles/new" class="btn btn-dark"><i class="fa-solid fa-plus"></i> Add New Vehicle</a>
+      <a href="/vehicles" class="btn btn-outline-primary"><i class="fa-solid fa-car"></i> Browse Vehicles</a>
+    </div>
+  </div>
+</div>
+
+<!-- Stats Cards Row -->
+<div class="row mb-4 g-3">
+  <div class="col-md-3">
+    <div class="dashboard-stat-card stat-card-total bg-light">
+      <div class="stat-icon"><i class="fa-solid fa-car"></i></div>
+      <div class="stat-number"><%= totalVehicles %></div>
+      <div class="stat-label">Total Vehicles</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="dashboard-stat-card stat-card-approved bg-light">
+      <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+      <div class="stat-number"><%= availableCount %></div>
+      <div class="stat-label">Available</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="dashboard-stat-card stat-card-pending bg-light">
+      <div class="stat-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+      <div class="stat-number"><%= rentedCount %></div>
+      <div class="stat-label">Rented</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="dashboard-stat-card stat-card-rejected bg-light">
+      <div class="stat-icon"><i class="fa-solid fa-wrench"></i></div>
+      <div class="stat-number"><%= maintenanceCount %></div>
+      <div class="stat-label">Maintenance</div>
+    </div>
+  </div>
+</div>
+
+<!-- Vehicles List -->
+<% if(allVehicles.length === 0) { %>
+  <div class="text-center py-5">
+    <i class="fa-solid fa-car fa-3x text-muted mb-3"></i>
+    <h5 class="text-muted">You haven't listed any vehicles yet.</h5>
+    <a href="/vehicles/new" class="btn btn-dark mt-2">List Your First Vehicle</a>
+  </div>
+<% } else { %>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="fw-bold mb-0"><i class="fa-solid fa-list"></i> Your Vehicles</h5>
+    <span class="text-muted" style="font-size: 0.9rem;"><%= allVehicles.length %> vehicle(s)</span>
+  </div>
+  <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-4">
+    <% for(let vehicle of allVehicles) { %>
+      <div class="col">
+        <div class="card vehicle-card h-100 verification-card">
+          <div class="position-relative overflow-hidden">
+            <img src="<%= vehicle.image.url %>" class="card-img-top" alt="<%= vehicle.name %>">
+            <div class="vehicle-card-badge">
+              <span class="badge bg-<%= vehicle.vehicleType === 'Car' ? 'primary' : 'success' %>"><%= vehicle.vehicleType %></span>
+            </div>
+            <div class="vehicle-status-badge">
+              <% if(vehicle.availability === 'Available') { %>
+                <span class="badge bg-success">Available</span>
+              <% } else if(vehicle.availability === 'Rented') { %>
+                <span class="badge bg-warning text-dark">Rented</span>
+              <% } else { %>
+                <span class="badge bg-secondary">Maintenance</span>
+              <% } %>
+            </div>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title"><%= vehicle.name %></h5>
+            <p class="card-text mb-1">
+              <i class="fa-solid fa-location-dot" style="color: var(--primary);"></i>
+              <%= vehicle.city || vehicle.location || 'Location not set' %>
+            </p>
+            <p class="card-text mb-1">
+              <i class="fa-solid fa-tag" style="color: var(--primary);"></i>
+              <%= [vehicle.brand, vehicle.model, vehicle.fuelType].filter(Boolean).join(' · ') || 'N/A' %>
+            </p>
+            <p class="price-text mt-2">
+              &#8377;<%= vehicle.dailyPrice.toLocaleString("en-IN") %> <small style="font-size: 0.8rem; font-weight: 400; color: var(--text-secondary);">/ day</small>
+            </p>
+          </div>
+          <div class="card-footer d-flex justify-content-between gap-2">
+            <a href="/vehicles/<%= vehicle._id %>" class="btn btn-outline-dark btn-sm flex-fill">View</a>
+            <a href="/vehicles/<%= vehicle._id %>/edit" class="btn btn-dark btn-sm flex-fill">Edit</a>
+            <form action="/vehicles/<%= vehicle._id %>?_method=DELETE" method="POST" class="flex-fill" onsubmit="return confirm('Are you sure you want to delete this vehicle?');">
+              <button class="btn btn-outline-danger btn-sm w-100">Delete</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    <% } %>
+  </div>
+<% } %>

@@ -1,0 +1,46 @@
+<%
+  // Footer extras — reusable column data for the premium footer.
+  // Consumed by views/includes/footer.ejs.
+  const fCompany = {
+    desc: "Your trusted platform for finding the perfect student accommodation. We connect students with verified, affordable rental rooms near colleges and universities.",
+    socials: [
+      { icon: "fa-brands fa-facebook-f", label: "Facebook" },
+      { icon: "fa-brands fa-instagram",  label: "Instagram" },
+      { icon: "fa-brands fa-twitter",    label: "Twitter" },
+      { icon: "fa-brands fa-linkedin-in", label: "LinkedIn" },
+      { icon: "fa-brands fa-youtube",    label: "YouTube" },
+    ],
+  };
+  const fQuickLinks = [
+    { label: "Browse Rooms", href: "/listings" },
+    { label: "List Your Room", href: "/listings/new" },
+    { label: "Mess", href: "/messes" },
+    { label: "Laundry", href: "/laundry" },
+    { label: "Owner Dashboard", href: "/listings/owner/dashboard" },
+  ];
+  const fStudents = [
+    { label: "Featured Rooms", href: "/listings" },
+    { label: "Rooms Near Colleges", href: "/listings" },
+    { label: "How It Works", href: "/listings" },
+    { label: "Create Account", href: "/signup" },
+    { label: "Sign In", href: "/login" },
+  ];
+  const fOwners = [
+    { label: "List Your Property", href: "/listings/new" },
+    { label: "Owner Dashboard", href: "/listings/owner/dashboard" },
+    { label: "Visit Requests", href: "/listings/owner/visit-requests" },
+    { label: "Mess Dashboard", href: "/messes/owner/dashboard" },
+    { label: "Laundry Dashboard", href: "/laundry/owner/dashboard" },
+  ];
+  const fPolicy = [
+    { label: "Privacy Policy", href: "/privacy" },
+    { label: "Terms of Service", href: "/terms" },
+    { label: "Refund Policy", href: "/refund" },
+  ];
+  const fContact = {
+    address: "123 Student Hub, MG Road, Nagpur - 440001",
+    phone: "+91 98765 43210",
+    email: "support@studentaccommodation.in",
+    hours: "Mon - Sat: 9:00 AM - 6:00 PM",
+  };
+%>

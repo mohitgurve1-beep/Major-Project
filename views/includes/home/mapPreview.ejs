@@ -1,0 +1,47 @@
+<%
+  // Interactive Map Preview (Feature 3).
+  // Reuses existing Mapbox integration. Multi-marker map. No backend changes.
+  const mapRooms = typeof allListings !== 'undefined' ? allListings.filter(l => l.geometry && l.geometry.coordinates && l.geometry.coordinates.length === 2) : [];
+  const mapRoomsForJs = mapRooms.slice(0, 12).map(l => ({
+    id: l._id, title: l.title, price: l.price, img: (l.image && l.image.url) || '', lat: l.geometry.coordinates[1], lng: l.geometry.coordinates[0]
+  }));
+  const mapToken = process.env.MAP_TOKEN;
+  const mapDataEncoded = encodeURIComponent(JSON.stringify(mapRoomsForJs));
+%>
+<section class="home-section home-map-preview">
+  <div class="container">
+    <%- include("partials/sectionHeader.ejs", {
+      title: "Explore Rooms on Map",
+      subtitle: "See available rooms near you",
+    }) %>
+    <% if(mapRooms.length > 0 && mapToken && mapToken !== 'your_mapbox_public_token'){ %>
+      <div class="row g-4">
+        <div class="col-lg-7">
+          <div id="homeMap" class="home-map"
+               data-token="<%= mapToken %>"
+               data-rooms="<%= mapDataEncoded %>"></div>
+        </div>
+        <div class="col-lg-5">
+          <div class="home-map-list">
+            <h6 class="home-map-list-title"><i class="fa-solid fa-location-dot"></i> Nearby Available Rooms</h6>
+            <% mapRooms.slice(0,5).forEach(r => { %>
+              <a href="/listings/<%= r._id %>" class="home-map-list-item">
+                <img src="<%= r.image.url %>" alt="<%= r.title %>">
+                <div class="flex-grow-1">
+                  <strong><%= r.title %></strong>
+                  <small><i class="fa-solid fa-location-dot"></i> <%= r.location %></small>
+                </div>
+                <span class="home-price">&#8377;<%= r.price.toLocaleString("en-IN") %></span>
+              </a>
+            <% }); %>
+          </div>
+        </div>
+      </div>
+    <% } else { %>
+      <div class="text-center py-5">
+        <i class="fa-solid fa-map-location-dot fa-3x text-muted mb-3"></i>
+        <h5 class="text-muted">Map preview coming soon.</h5>
+      </div>
+    <% } %>
+  </div>
+</section>

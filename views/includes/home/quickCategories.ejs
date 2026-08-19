@@ -1,0 +1,33 @@
+<%
+  // Quick Categories (Section 4) — reusable category cards.
+  const categories = [
+    { icon: "fa-bed",     title: "Single Room",      sub: "Private space" },
+    { icon: "fa-people-roof", title: "Shared Room",  sub: "Split the cost" },
+    { icon: "fa-hotel",   title: "PG",               sub: "All-inclusive" },
+    { icon: "fa-house",   title: "1RK",              sub: "Compact living" },
+    { icon: "fa-building",title: "1BHK",             sub: "Bigger space" },
+    { icon: "fa-graduation-cap", title: "Near College", sub: "Walk to class" },
+    { icon: "fa-indian-rupee-sign", title: "Budget Friendly", sub: "Low rent" },
+    { icon: "fa-wifi",    title: "Fully Furnished",  sub: "Move-in ready" },
+    { icon: "fa-wifi",    title: "WiFi",             sub: "High speed" },
+  ];
+%>
+<section class="home-categories">
+  <div class="container">
+    <%- include("partials/sectionHeader.ejs", {
+      title: "Browse by Category",
+      subtitle: "Find exactly what fits your needs",
+    }) %>
+    <div class="home-cat-scroll">
+      <div class="home-cat-grid">
+        <% for(let c of categories){ %>
+          <a href="/listings?q=<%= encodeURIComponent(c.title) %>" class="home-cat-card">
+            <div class="home-cat-icon"><i class="fa-solid <%= c.icon %>"></i></div>
+            <div class="home-cat-title"><%= c.title %></div>
+            <div class="home-cat-sub"><%= c.sub %></div>
+          </a>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,92 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="dashboard-header">
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <div>
+      <h2><i class="fa-solid fa-utensils"></i> My Messes</h2>
+      <p class="text-muted">Manage your messes</p>
+    </div>
+    <div class="d-flex gap-2">
+      <a href="/messes/new" class="btn btn-dark"><i class="fa-solid fa-plus"></i> Add New Mess</a>
+      <a href="/messes" class="btn btn-outline-primary"><i class="fa-solid fa-utensils"></i> Browse Messes</a>
+    </div>
+  </div>
+</div>
+
+<!-- Stats Cards Row -->
+<div class="row mb-4 g-3">
+  <div class="col-md-4">
+    <div class="dashboard-stat-card stat-card-total bg-light">
+      <div class="stat-icon"><i class="fa-solid fa-utensils"></i></div>
+      <div class="stat-number"><%= totalMesses %></div>
+      <div class="stat-label">Total Messes</div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="dashboard-stat-card stat-card-approved bg-light">
+      <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+      <div class="stat-number"><%= availableCount %></div>
+      <div class="stat-label">Available</div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="dashboard-stat-card stat-card-rejected bg-light">
+      <div class="stat-icon"><i class="fa-solid fa-circle-xmark"></i></div>
+      <div class="stat-number"><%= closedCount %></div>
+      <div class="stat-label">Closed</div>
+    </div>
+  </div>
+</div>
+
+<!-- Messes List -->
+<% if(allMesses.length === 0) { %>
+  <div class="text-center py-5">
+    <i class="fa-solid fa-utensils fa-3x text-muted mb-3"></i>
+    <h5 class="text-muted">You haven't listed any messes yet.</h5>
+    <a href="/messes/new" class="btn btn-dark mt-2">List Your First Mess</a>
+  </div>
+<% } else { %>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="fw-bold mb-0"><i class="fa-solid fa-list"></i> Your Messes</h5>
+    <span class="text-muted" style="font-size: 0.9rem;"><%= allMesses.length %> mess(es)</span>
+  </div>
+  <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-4">
+    <% for(let mess of allMesses) { %>
+      <div class="col">
+        <div class="card mess-card h-100 verification-card">
+          <div class="position-relative overflow-hidden">
+            <img src="<%= mess.image.url %>" class="card-img-top" alt="<%= mess.name %>">
+            <div class="mess-card-badge">
+              <% if(mess.availability === 'Available') { %>
+                <span class="badge bg-success">Available</span>
+              <% } else { %>
+                <span class="badge bg-secondary">Closed</span>
+              <% } %>
+            </div>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title"><%= mess.name %></h5>
+            <p class="card-text mb-1">
+              <i class="fa-solid fa-location-dot" style="color: var(--primary);"></i>
+              <%= mess.city || mess.location || 'Location not set' %>
+            </p>
+            <p class="card-text mb-1">
+              <i class="fa-solid fa-utensils" style="color: var(--primary);"></i>
+              <%= mess.mealType || 'N/A' %>
+            </p>
+            <p class="price-text mt-2">
+              &#8377;<%= mess.monthlyPrice.toLocaleString("en-IN") %> <small style="font-size: 0.8rem; font-weight: 400; color: var(--text-secondary);">/ month</small>
+            </p>
+          </div>
+          <div class="card-footer d-flex justify-content-between gap-2">
+            <a href="/messes/<%= mess._id %>" class="btn btn-outline-dark btn-sm flex-fill">View</a>
+            <a href="/messes/<%= mess._id %>/edit" class="btn btn-dark btn-sm flex-fill">Edit</a>
+            <form action="/messes/<%= mess._id %>?_method=DELETE" method="POST" class="flex-fill" onsubmit="return confirm('Are you sure you want to delete this mess?');">
+              <button class="btn btn-outline-danger btn-sm w-100">Delete</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    <% } %>
+  </div>
+<% } %>

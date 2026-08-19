@@ -1,0 +1,38 @@
+<%
+  // Rooms Near Popular Colleges (Feature 2).
+  // Clicking "View Rooms" redirects to /listings?q=<college> using existing search.
+  const colleges = [
+    { name: "VNIT Nagpur",              icon: "fa-building-columns", rooms: 24,  rent: 6500 },
+    { name: "RTMNU (Nagpur University)", icon: "fa-graduation-cap",   rooms: 18,  rent: 5800 },
+    { name: "Priyadarshini College",    icon: "fa-school",            rooms: 15,  rent: 5200 },
+    { name: "YCCE",                     icon: "fa-building-columns", rooms: 21,  rent: 6200 },
+    { name: "G H Raisoni",              icon: "fa-school",            rooms: 17,  rent: 5600 },
+    { name: "RCOEM",                    icon: "fa-building-columns", rooms: 19,  rent: 6000 },
+    { name: "Government Polytechnic",   icon: "fa-graduation-cap",    rooms: 12,  rent: 4800 },
+  ];
+%>
+<section class="home-section home-colleges">
+  <div class="container">
+    <%- include("partials/sectionHeader.ejs", {
+      title: "Rooms Near Popular Colleges",
+      subtitle: "Stay close to campus — browse rooms by college",
+    }) %>
+    <div class="row g-4">
+      <% colleges.forEach(c => { %>
+        <div class="col-6 col-md-4 col-lg-3">
+          <div class="home-college-card h-100">
+            <div class="home-college-icon"><i class="fa-solid <%= c.icon %>"></i></div>
+            <h5 class="home-college-name"><%= c.name %></h5>
+            <div class="home-college-meta">
+              <span><i class="fa-solid fa-bed"></i> <%= c.rooms %> rooms</span>
+              <span><i class="fa-solid fa-indian-rupee-sign"></i> &#8377;<%= c.rent %>/mo avg</span>
+            </div>
+            <a href="/listings?q=<%= encodeURIComponent(c.name) %>" class="home-btn-outline btn-sm w-100">
+              View Rooms <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+</section>

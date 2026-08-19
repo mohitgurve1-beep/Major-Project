@@ -18,6 +18,39 @@ const listingSchema = new Schema({
     price : Number,
     location : String,
     country : String,
+    // Phase 11 — Advanced Search & Smart Filters (additive, optional, safe defaults)
+    city : {
+        type : String,
+        trim : true,
+    },
+    roomType : {
+        type : String,
+        enum : ['Single Room', 'Shared Room', 'PG', '1RK', '1BHK', '2BHK'],
+        default : 'Single Room',
+    },
+    furnishing : {
+        type : String,
+        enum : ['Fully Furnished', 'Semi Furnished', 'Unfurnished'],
+    },
+    genderPreference : {
+        type : String,
+        enum : ['Boys', 'Girls', 'Anyone'],
+        default : 'Anyone',
+    },
+    availability : {
+        type : String,
+        enum : ['Available', 'Occupied', 'Reserved'],
+        default : 'Available',
+    },
+    minimumStay : {
+        type : Number,
+        min : 1,
+        default : 1,
+    },
+    amenities : {
+        type : [String],
+        default : [],
+    },
     reviews : [
         {
             type: Schema.Types.ObjectId,
@@ -30,15 +63,45 @@ const listingSchema = new Schema({
     },
     geometry : {
        type: {
-         type: String, // Don't do `{ location: { type: String } }`
-         enum: ['Point'], // 'location.type' must be 'Point'
+         type: String,
+         enum: ['Point'],
          required: true,
        },
        coordinates: {
          type: [Number],
          required: true,
        }
-  }
+    },
+    visitRequests : [
+        {
+            student : {
+                type: Schema.Types.ObjectId,
+                ref: "User",
+                required: true,
+            },
+            date : {
+                type: Date,
+                required: true,
+            },
+            time : {
+                type: String,
+                required: true,
+            },
+            message : {
+                type: String,
+                default: '',
+            },
+            status : {
+                type: String,
+                enum: ['pending', 'accepted', 'rejected', 'completed', 'cancelled'],
+                default: 'pending',
+            },
+            createdAt : {
+                type: Date,
+                default: Date.now,
+            },
+        },
+    ],
 });
 
 listingSchema.post("findOneAndDelete", async (listing) => {

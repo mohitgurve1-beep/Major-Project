@@ -1,0 +1,48 @@
+<%
+  // Recently Added Rooms (Feature 4) — reusable Bootstrap carousel.
+  // Reuses existing featuredRooms data (latest listings). No duplicate queries.
+  const recentRooms = typeof featuredRooms !== 'undefined' ? featuredRooms : [];
+  const perView = 3;
+  const groups = [];
+  if (recentRooms.length) {
+    for (let i = 0; i < recentRooms.length; i += perView) {
+      groups.push(recentRooms.slice(i, i + perView));
+    }
+  }
+%>
+<section class="home-section home-recent">
+  <div class="container">
+    <%- include("partials/sectionHeader.ejs", {
+      title: "Recently Added Rooms",
+      subtitle: "Fresh listings from our owners",
+      link: "/listings",
+      linkText: "View All",
+    }) %>
+    <% if(groups.length){ %>
+      <div id="recentRoomsCarousel" class="carousel slide home-recent-carousel" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <% groups.forEach((group, gi) => { %>
+            <div class="carousel-item <%= gi === 0 ? 'active' : '' %>">
+              <div class="row g-4">
+                <% group.forEach(room => { %>
+                  <%- include("partials/roomCard.ejs", { room: room, showType: false, showAmenities: false }) %>
+                <% }); %>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+        <button class="carousel-control-prev home-recent-ctrl" type="button" data-bs-target="#recentRoomsCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        </button>
+        <button class="carousel-control-next home-recent-ctrl" type="button" data-bs-target="#recentRoomsCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        </button>
+      </div>
+    <% } else { %>
+      <div class="text-center py-4 text-muted">
+        <i class="fa-solid fa-clock-rotate-left fa-2x mb-2"></i>
+        <p class="mb-0">No recently added rooms yet.</p>
+      </div>
+    <% } %>
+  </div>
+</section>

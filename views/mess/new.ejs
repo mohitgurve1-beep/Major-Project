@@ -1,0 +1,103 @@
+<% layout("/layouts/boilerplate") %>
+<div class="row mt-3">
+    <div class="col-12 col-md-10 col-lg-8 mx-auto">
+        <h3><i class="fa-solid fa-utensils"></i> Create a new Mess</h3>
+        <p class="text-muted">Provide details about your mess so students can find and contact you.</p>
+        <form action="/messes" method="POST" novalidate class="needs-validation" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="name" class="form-label">Mess Name *</label>
+                <input type="text" name="mess[name]" id="name" placeholder="e.g. Krishna Veg Mess" class="form-control" required>
+                <div class="invalid-feedback">Please provide a mess name.</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea name="mess[description]" id="description" class="form-control" rows="3" placeholder="Short description of your mess, food, and specialities"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="image" class="form-label">Upload mess image</label>
+                <input type="file" name="mess[image]" id="image" class="form-control" required>
+                <div class="invalid-feedback">Please upload a mess image.</div>
+            </div>
+
+            <div class="row">
+                <div class="mb-3 col-md-6">
+                    <label for="monthlyPrice" class="form-label">Monthly Price (&#8377;) *</label>
+                    <input type="number" name="mess[monthlyPrice]" id="monthlyPrice" placeholder="e.g. 3500" min="0" class="form-control" required>
+                    <div class="invalid-feedback">Price should be valid.</div>
+                </div>
+                <div class="mb-3 col-md-6">
+                    <label for="mealType" class="form-label">Meal Type</label>
+                    <select name="mess[mealType]" id="mealType" class="form-select">
+                        <option value="">Select Meal Type</option>
+                        <% for(let t of mealTypes) { %>
+                            <option value="<%= t %>"><%= t %></option>
+                        <% } %>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label d-block">Meals Provided</label>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" name="mess[breakfast]" id="breakfast" value="on">
+                    <label class="form-check-label" for="breakfast"><i class="fa-solid fa-mug-hot"></i> Breakfast</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" name="mess[lunch]" id="lunch" value="on">
+                    <label class="form-check-label" for="lunch"><i class="fa-solid fa-bowl-food"></i> Lunch</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" name="mess[dinner]" id="dinner" value="on">
+                    <label class="form-check-label" for="dinner"><i class="fa-solid fa-utensils"></i> Dinner</label>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="timing" class="form-label">Timing</label>
+                <input type="text" name="mess[timing]" id="timing" placeholder="e.g. Breakfast 8-10 AM, Lunch 12-2 PM, Dinner 7-9 PM" class="form-control">
+            </div>
+
+            <div class="row">
+                <div class="mb-3 col-md-6">
+                    <label for="address" class="form-label">Address</label>
+                    <input type="text" name="mess[address]" id="address" placeholder="Street, building, landmark" class="form-control">
+                </div>
+                <div class="mb-3 col-md-6">
+                    <label for="city" class="form-label">City</label>
+                    <input type="text" name="mess[city]" id="city" placeholder="e.g. Nagpur" class="form-control">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="mb-3 col-md-6">
+                    <label for="location" class="form-label">Area / Location</label>
+                    <input type="text" name="mess[location]" id="location" placeholder="e.g. Trimurti Nagar" class="form-control">
+                </div>
+                <div class="mb-3 col-md-6">
+                    <label for="contactNumber" class="form-label">Contact Number</label>
+                    <input type="text" name="mess[contactNumber]" id="contactNumber" placeholder="+91 98765 43210" class="form-control">
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="mapLocation" class="form-label">Google Map Location</label>
+                <input type="text" name="mess[mapLocation]" id="mapLocation" placeholder="Google Maps link or coordinates" class="form-control">
+            </div>
+
+            <div class="mb-3">
+                <label for="availability" class="form-label">Availability</label>
+                <select name="mess[availability]" id="availability" class="form-select">
+                    <option value="">Select Availability</option>
+                    <% for(let o of availabilityOptions) { %>
+                        <option value="<%= o %>"><%= o %></option>
+                    <% } %>
+                </select>
+            </div>
+
+            <button class="btn btn-dark add-btn mt-3"><i class="fa-solid fa-plus"></i> Add Mess</button>
+            <a href="/messes" class="btn btn-outline-secondary mt-3">Cancel</a>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,22 @@
+<%
+  // Reusable section header component.
+  // Usage: include("partials/sectionHeader.ejs", { title, subtitle, link, linkText, center })
+  const sh = typeof sectionHeader !== 'undefined' ? sectionHeader : {};
+  const shTitle = typeof title !== 'undefined' ? title : (sh.title || '');
+  const shSub = typeof subtitle !== 'undefined' ? subtitle : (sh.subtitle || '');
+  const shLink = typeof link !== 'undefined' ? link : (sh.link || '');
+  const shLinkText = typeof linkText !== 'undefined' ? linkText : (sh.linkText || '');
+  const shCenter = typeof center !== 'undefined' ? center : (sh.center || false);
+%>
+<% if(shTitle){ %>
+<div class="home-section-head <%= shCenter ? 'text-center' : 'd-flex flex-wrap align-items-end justify-content-between gap-3' %>">
+  <div>
+    <span class="home-eyebrow"><i class="fa-solid fa-bookmark"></i></span>
+    <h2 class="home-section-title mb-1"><%= shTitle %></h2>
+    <% if(shSub){ %><p class="home-section-sub mb-0"><%= shSub %></p><% } %>
+  </div>
+  <% if(shLink){ %>
+    <a href="<%= shLink %>" class="home-view-all"><%= shLinkText %> <i class="fa-solid fa-arrow-right"></i></a>
+  <% } %>
+</div>
+<% } %>
