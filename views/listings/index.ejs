@@ -106,7 +106,7 @@
                   <a href="/listings/<%= listing._id %>" class="listing-link">
                     <div class="card listing-card h-100">
                       <div class="position-relative overflow-hidden">
-                        <img src="<%= listing.image.url %>" class="card-img-top" alt="<%= listing.title %>">
+                        <img src="<%= (listing.images && listing.images.length > 0) ? listing.images[0].url : (listing.image ? listing.image.url : '') %>" class="card-img-top" alt="<%= listing.title %>">
                         <div class="card-badge">
                           <% if(listing.availability && listing.availability !== 'Available') { %>
                             <span class="badge bg-<%= listing.availability === 'Reserved' ? 'warning text-dark' : 'secondary' %>"><%= listing.availability %></span>
@@ -168,7 +168,7 @@
                   <a href="/listings/<%= listing._id %>" class="listing-link">
                     <div class="card listing-card h-100">
                       <div class="position-relative overflow-hidden">
-                        <img src="<%= listing.image.url %>" class="card-img-top" alt="<%= listing.title %>">
+                        <img src="<%= (listing.images && listing.images.length > 0) ? listing.images[0].url : (listing.image ? listing.image.url : '') %>" class="card-img-top" alt="<%= listing.title %>">
                         <div class="card-badge">
                           <% if(listing.availability && listing.availability !== 'Available') { %>
                             <span class="badge bg-<%= listing.availability === 'Reserved' ? 'warning text-dark' : 'secondary' %>"><%= listing.availability %></span>
@@ -226,32 +226,32 @@
                 <a href="/listings/<%= listing._id %>" class="listing-link">
                   <div class="card listing-card h-100">
                     <div class="position-relative overflow-hidden">
-                      <img src="<%= listing.image.url %>" class="card-img-top" alt="<%= listing.title %>">
-                      <div class="card-badge">
-                        <% if(listing.availability && listing.availability !== 'Available') { %>
-                          <span class="badge bg-<%= listing.availability === 'Reserved' ? 'warning text-dark' : 'secondary' %>"><%= listing.availability %></span>
-                        <% } else { %>
-                          <span class="badge bg-primary">Available</span>
-                        <% } %>
+                        <img src="<%= (listing.images && listing.images.length > 0) ? listing.images[0].url : (listing.image ? listing.image.url : '') %>" class="card-img-top" alt="<%= listing.title %>">
+                        <div class="card-badge">
+                          <% if(listing.availability && listing.availability !== 'Available') { %>
+                            <span class="badge bg-<%= listing.availability === 'Reserved' ? 'warning text-dark' : 'secondary' %>"><%= listing.availability %></span>
+                          <% } else { %>
+                            <span class="badge bg-primary">Available</span>
+                          <% } %>
+                        </div>
+                        <div class="wishlist-icon" data-id="<%= listing._id %>">
+                          <i class="fa-regular fa-heart"></i>
+                        </div>
                       </div>
-                      <div class="wishlist-icon" data-id="<%= listing._id %>">
-                        <i class="fa-regular fa-heart"></i>
-                      </div>
-                    </div>
-                    <div class="card-body">
-                      <h5 class="card-title"><%= listing.title %></h5>
-                      <p class="card-text mb-1">
-                        <i class="fa-solid fa-location-dot" style="color: var(--primary);"></i>
-                        <%= listing.location %>, <%= listing.country %>
-                      </p>
-                      <% if(listing.roomType) { %>
+                      <div class="card-body">
+                        <h5 class="card-title"><%= listing.title %></h5>
                         <p class="card-text mb-1">
-                          <i class="fa-solid fa-bed" style="color: var(--primary);"></i>
-                          <%= listing.roomType %>
-                          <% if(listing.furnishing) { %> · <%= listing.furnishing %><% } %>
+                          <i class="fa-solid fa-location-dot" style="color: var(--primary);"></i>
+                          <%= listing.location %>, <%= listing.country %>
                         </p>
-                      <% } %>
-                      <% if(listing.genderPreference) { %>
+                        <% if(listing.roomType) { %>
+                          <p class="card-text mb-1">
+                            <i class="fa-solid fa-bed" style="color: var(--primary);"></i>
+                            <%= listing.roomType %>
+                            <% if(listing.furnishing) { %> · <%= listing.furnishing %><% } %>
+                          </p>
+                        <% } %>
+                        <% if(listing.genderPreference) { %>
                         <p class="card-text mb-1">
                           <i class="fa-solid fa-people-group" style="color: var(--primary);"></i>
                           <%= listing.genderPreference %>

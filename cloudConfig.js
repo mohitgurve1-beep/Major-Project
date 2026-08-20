@@ -3,6 +3,10 @@ const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const multer = require('multer');
 const path = require('path');
 
+const MAX_FILE_SIZE = 8 * 1024 * 1024; // 8MB per file
+const MAX_FILES = 10;
+const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/jpg'];
+
 const isCloudinaryConfigured = () => {
   const cloudName = process.env.CLOUD_NAME;
   const apiKey = process.env.CLOUD_API_KEY;
@@ -41,4 +45,7 @@ module.exports = {
     cloudinary,
     storage,
     isCloudinaryConfigured,
+    MAX_FILES,
+    MAX_SIZE: MAX_FILES,
+    ALLOWED_TYPES,
 }

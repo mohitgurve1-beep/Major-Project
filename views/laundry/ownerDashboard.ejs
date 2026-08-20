@@ -55,7 +55,7 @@
       <div class="col">
         <div class="card laundry-card h-100 verification-card">
           <div class="position-relative overflow-hidden">
-            <img src="<%= laundry.image.url %>" class="card-img-top" alt="<%= laundry.name %>">
+            <img src="<%= (laundry.images && laundry.images.length > 0) ? laundry.images[0].url : (laundry.image ? laundry.image.url : '') %>" class="card-img-top" alt="<%= laundry.name %>">
             <div class="laundry-card-badge">
               <% if(laundry.availability === 'Available') { %>
                 <span class="badge bg-success">Available</span>

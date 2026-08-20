@@ -13,7 +13,7 @@
   <div class="home-room-card h-100">
     <div class="home-room-media position-relative overflow-hidden">
       <a href="/listings/<%= rc._id %>" class="d-block">
-        <img src="<%= rc.image.url %>" class="home-room-img" alt="<%= rc.title %>">
+        <img src="<%= (rc.images && rc.images.length > 0) ? rc.images[0].url : (rc.image ? rc.image.url : '') %>" class="home-room-img" alt="<%= rc.title %>">
       </a>
       <div class="home-room-badges">
         <span class="home-verified-badge"><i class="fa-solid fa-circle-check"></i> Verified</span>

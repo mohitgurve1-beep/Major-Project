@@ -14,7 +14,7 @@ router.route("/")
   .post(
     isLoggedIn,
     isVehicleOwnerRole,
-    upload.single("vehicle[image]"),
+    upload.array("images", 10),
     validateVehicle,
     wrapAsync(vehicleController.createVehicle),
   );
@@ -31,9 +31,9 @@ router.route("/:id")
      isLoggedIn,
      isVehicleOwnerRole,
      isVehicleOwner,
-     upload.single("vehicle[image]"),
-     validateVehicle,
-     wrapAsync(vehicleController.updateVehicle),
+      upload.array("images", 10),
+      validateVehicle,
+      wrapAsync(vehicleController.updateVehicle),
    )
    .delete(isLoggedIn, isVehicleOwnerRole, isVehicleOwner, wrapAsync(vehicleController.destroyVehicle));
 

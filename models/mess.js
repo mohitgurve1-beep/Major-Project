@@ -15,6 +15,12 @@ const messSchema = new Schema({
         url : String,
         filename : String,
     },
+    images : [
+        {
+            url : String,
+            filename : String,
+        },
+    ],
     monthlyPrice : {
         type : Number,
         min : 0,

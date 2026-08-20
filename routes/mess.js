@@ -14,7 +14,7 @@ router.route("/")
   .post(
     isLoggedIn,
     isMessOwnerRole,
-    upload.single("mess[image]"),
+    upload.array("images", 10),
     validateMess,
     wrapAsync(messController.createMess),
   );
@@ -31,9 +31,9 @@ router.route("/:id")
      isLoggedIn,
      isMessOwnerRole,
      isMessOwner,
-     upload.single("mess[image]"),
-     validateMess,
-     wrapAsync(messController.updateMess),
+      upload.array("images", 10),
+      validateMess,
+      wrapAsync(messController.updateMess),
    )
    .delete(isLoggedIn, isMessOwnerRole, isMessOwner, wrapAsync(messController.destroyMess));
 

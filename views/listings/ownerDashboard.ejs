@@ -65,7 +65,7 @@
       <div class="col">
         <div class="card listing-card h-100 verification-card">
           <div class="position-relative overflow-hidden">
-            <img src="<%= listing.image.url %>" class="card-img-top" alt="<%= listing.title %>">
+            <img src="<%= (listing.images && listing.images.length > 0) ? listing.images[0].url : (listing.image ? listing.image.url : '') %>" class="card-img-top" alt="<%= listing.title %>">
           </div>
           <div class="card-body">
             <h5 class="card-title"><%= listing.title %></h5>

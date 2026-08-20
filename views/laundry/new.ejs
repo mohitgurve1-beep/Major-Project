@@ -16,9 +16,9 @@
             </div>
 
             <div class="mb-3">
-                <label for="image" class="form-label">Upload service image</label>
-                <input type="file" name="laundry[image]" id="image" class="form-control" required>
-                <div class="invalid-feedback">Please upload a service image.</div>
+                <label for="images" class="form-label">Upload service images (up to 10)</label>
+                <input type="file" name="images" id="images" class="form-control" multiple accept="image/*">
+                <small class="text-muted">You can select multiple images at once. Max 10 images, 8MB each.</small>
             </div>
 
             <div class="row">

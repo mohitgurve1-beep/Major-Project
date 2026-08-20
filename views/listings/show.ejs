@@ -1,4 +1,14 @@
 <% layout("/layouts/boilerplate") %>
+<%
+  // Normalize images for backward compatibility
+  let allImages = [];
+  if(listing.images && listing.images.length > 0) {
+    allImages = listing.images;
+  } else if(listing.image && listing.image.url) {
+    allImages = [listing.image];
+  }
+  let mainImage = allImages.length > 0 ? allImages[0] : null;
+%>
 <script>
   const mapToken = "<%= process.env.MAP_TOKEN %>";
   const listing = <%- JSON.stringify(listing) %>;
@@ -29,15 +39,18 @@
   <div class="col-lg-8">
     <!-- Gallery -->
     <div class="gallery-section">
-      <div class="gallery-main">
-        <img id="galleryMain" src="<%= listing.image.url %>" alt="<%= listing.title %>" class="w-100">
-      </div>
-      <div class="gallery-thumbs">
-        <img src="<%= listing.image.url %>" class="gallery-thumb active" alt="View 1">
-        <img src="<%= listing.image.url %>" class="gallery-thumb" alt="View 2">
-        <img src="<%= listing.image.url %>" class="gallery-thumb" alt="View 3">
-        <img src="<%= listing.image.url %>" class="gallery-thumb" alt="View 4">
-      </div>
+      <% if(mainImage) { %>
+        <div class="gallery-main">
+          <img id="galleryMain" src="<%= mainImage.url %>" alt="<%= listing.title %>" class="w-100">
+        </div>
+      <% } %>
+      <% if(allImages.length > 1) { %>
+        <div class="gallery-thumbs">
+          <% for(let i = 0; i < allImages.length && i < 5; i++) { %>
+            <img src="<%= allImages[i].url %>" class="gallery-thumb <%= i === 0 ? 'active' : '' %>" alt="View <%= i + 1 %>" onclick="document.getElementById('galleryMain').src=this.src; document.querySelectorAll('.gallery-thumb').forEach(t=>t.classList.remove('active')); this.classList.add('active');">
+          <% } %>
+        </div>
+      <% } %>
     </div>
 
     <!-- Room Information Grid -->

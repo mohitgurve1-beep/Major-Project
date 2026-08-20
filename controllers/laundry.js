@@ -1,5 +1,15 @@
 const mongoose = require("mongoose");
 const Laundry = require("../models/laundry");
+const { cloudinary } = require("../cloudConfig.js");
+
+// Migrate old single image field to images array (backward compatibility)
+const normalizeImages = (item) => {
+    if (!item) return;
+    if ((!item.images || item.images.length === 0) && item.image && item.image.url) {
+        item.images = [{ url: item.image.url, filename: item.image.filename }];
+    }
+    if (!item.images) item.images = [];
+};
 
 // Admin-visible options for select dropdowns
 const AVAILABILITY_OPTIONS = ['Available', 'Closed'];
@@ -143,13 +153,13 @@ module.exports.showLaundry = async (req, res) => {
 };
 
 module.exports.createLaundry = async (req, res) => {
-    const url = req.file.path;
-    const filename = req.file.filename;
-
     const newLaundry = new Laundry(req.body.laundry);
 
     newLaundry.owner = req.user._id;
-    newLaundry.image = { url, filename };
+    newLaundry.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
+    if (newLaundry.images.length > 0) {
+        newLaundry.image = { url: newLaundry.images[0].url, filename: newLaundry.images[0].filename };
+    }
     newLaundry.pickupAvailable = boolFromForm(req.body.laundry?.pickupAvailable);
     newLaundry.deliveryAvailable = boolFromForm(req.body.laundry?.deliveryAvailable);
     newLaundry.sameDayService = boolFromForm(req.body.laundry?.sameDayService);
@@ -170,12 +180,10 @@ module.exports.renderEditForm = async (req, res) => {
         return res.redirect("/laundry");
     }
 
-    let originalImageUrl = laundry.image.url;
-    originalImageUrl = originalImageUrl.replace("/upload", "/upload/w_250");
+    normalizeImages(laundry);
 
     res.render("laundry/edit.ejs", {
         laundry,
-        originalImageUrl,
         availabilityOptions: AVAILABILITY_OPTIONS,
     });
 };
@@ -183,16 +191,35 @@ module.exports.renderEditForm = async (req, res) => {
 module.exports.updateLaundry = async (req, res) => {
     let { id } = req.params;
 
-    let laundry = await Laundry.findByIdAndUpdate(id, {
-        ...req.body.laundry,
-    });
+    let laundry = await Laundry.findById(id);
 
-    if (req.file) {
-        laundry.image = {
-            url: req.file.path,
-            filename: req.file.filename,
-        };
+    if (!laundry) {
+        req.flash("error", "Laundry service you requested does not exist!");
+        return res.redirect("/laundry");
     }
+
+    Object.assign(laundry, req.body.laundry);
+
+    // Handle image deletion
+    if (req.body.deleteImages && req.body.deleteImages.length > 0) {
+        const deleteIds = Array.isArray(req.body.deleteImages) ? req.body.deleteImages : [req.body.deleteImages];
+        for (let filename of deleteIds) {
+            await cloudinary.uploader.destroy(filename);
+        }
+        laundry.images = laundry.images.filter(img => !deleteIds.includes(img.filename));
+    }
+
+    // Add newly uploaded images
+    if (req.files && req.files.length > 0) {
+        const newImages = req.files.map(f => ({ url: f.path, filename: f.filename }));
+        laundry.images.push(...newImages);
+    }
+
+    // Sync backward-compat image field
+    if (laundry.images.length > 0) {
+        laundry.image = { url: laundry.images[0].url, filename: laundry.images[0].filename };
+    }
+
     laundry.pickupAvailable = boolFromForm(req.body.laundry?.pickupAvailable);
     laundry.deliveryAvailable = boolFromForm(req.body.laundry?.deliveryAvailable);
     laundry.sameDayService = boolFromForm(req.body.laundry?.sameDayService);
@@ -206,7 +233,15 @@ module.exports.updateLaundry = async (req, res) => {
 module.exports.destroyLaundry = async (req, res) => {
     let { id } = req.params;
 
-    await Laundry.findByIdAndDelete(id);
+    const laundry = await Laundry.findById(id);
+    if (laundry) {
+        for (let img of laundry.images) {
+            if (img.filename) {
+                await cloudinary.uploader.destroy(img.filename);
+            }
+        }
+        await Laundry.findByIdAndDelete(id);
+    }
 
     req.flash("success", "Laundry Service Deleted!");
     res.redirect("/laundry");

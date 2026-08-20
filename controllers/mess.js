@@ -1,5 +1,15 @@
 const mongoose = require("mongoose");
 const Mess = require("../models/mess");
+const { cloudinary } = require("../cloudConfig.js");
+
+// Migrate old single image field to images array (backward compatibility)
+const normalizeImages = (item) => {
+    if (!item) return;
+    if ((!item.images || item.images.length === 0) && item.image && item.image.url) {
+        item.images = [{ url: item.image.url, filename: item.image.filename }];
+    }
+    if (!item.images) item.images = [];
+};
 
 // Admin-visible options for select dropdowns
 const MEAL_TYPES = ['Veg', 'Non-Veg', 'Both'];
@@ -137,13 +147,13 @@ module.exports.showMess = async (req, res) => {
 };
 
 module.exports.createMess = async (req, res) => {
-    const url = req.file.path;
-    const filename = req.file.filename;
-
     const newMess = new Mess(req.body.mess);
 
     newMess.owner = req.user._id;
-    newMess.image = { url, filename };
+    newMess.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
+    if (newMess.images.length > 0) {
+        newMess.image = { url: newMess.images[0].url, filename: newMess.images[0].filename };
+    }
     newMess.breakfast = boolFromForm(req.body.mess?.breakfast);
     newMess.lunch = boolFromForm(req.body.mess?.lunch);
     newMess.dinner = boolFromForm(req.body.mess?.dinner);
@@ -164,12 +174,10 @@ module.exports.renderEditForm = async (req, res) => {
         return res.redirect("/messes");
     }
 
-    let originalImageUrl = mess.image.url;
-    originalImageUrl = originalImageUrl.replace("/upload", "/upload/w_250");
+    normalizeImages(mess);
 
     res.render("mess/edit.ejs", {
         mess,
-        originalImageUrl,
         mealTypes: MEAL_TYPES,
         availabilityOptions: AVAILABILITY_OPTIONS,
     });
@@ -178,16 +186,35 @@ module.exports.renderEditForm = async (req, res) => {
 module.exports.updateMess = async (req, res) => {
     let { id } = req.params;
 
-    let mess = await Mess.findByIdAndUpdate(id, {
-        ...req.body.mess,
-    });
+    let mess = await Mess.findById(id);
 
-    if (req.file) {
-        mess.image = {
-            url: req.file.path,
-            filename: req.file.filename,
-        };
+    if (!mess) {
+        req.flash("error", "Mess you requested does not exist!");
+        return res.redirect("/messes");
     }
+
+    Object.assign(mess, req.body.mess);
+
+    // Handle image deletion
+    if (req.body.deleteImages && req.body.deleteImages.length > 0) {
+        const deleteIds = Array.isArray(req.body.deleteImages) ? req.body.deleteImages : [req.body.deleteImages];
+        for (let filename of deleteIds) {
+            await cloudinary.uploader.destroy(filename);
+        }
+        mess.images = mess.images.filter(img => !deleteIds.includes(img.filename));
+    }
+
+    // Add newly uploaded images
+    if (req.files && req.files.length > 0) {
+        const newImages = req.files.map(f => ({ url: f.path, filename: f.filename }));
+        mess.images.push(...newImages);
+    }
+
+    // Sync backward-compat image field
+    if (mess.images.length > 0) {
+        mess.image = { url: mess.images[0].url, filename: mess.images[0].filename };
+    }
+
     mess.breakfast = boolFromForm(req.body.mess?.breakfast);
     mess.lunch = boolFromForm(req.body.mess?.lunch);
     mess.dinner = boolFromForm(req.body.mess?.dinner);
@@ -201,7 +228,15 @@ module.exports.updateMess = async (req, res) => {
 module.exports.destroyMess = async (req, res) => {
     let { id } = req.params;
 
-    await Mess.findByIdAndDelete(id);
+    const mess = await Mess.findById(id);
+    if (mess) {
+        for (let img of mess.images) {
+            if (img.filename) {
+                await cloudinary.uploader.destroy(img.filename);
+            }
+        }
+        await Mess.findByIdAndDelete(id);
+    }
 
     req.flash("success", "Mess Deleted!");
     res.redirect("/messes");

@@ -15,6 +15,12 @@ const laundrySchema = new Schema({
         url : String,
         filename : String,
     },
+    images : [
+        {
+            url : String,
+            filename : String,
+        },
+    ],
     washFoldPrice : {
         type : Number,
         min : 0,

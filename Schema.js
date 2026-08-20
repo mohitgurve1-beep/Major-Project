@@ -7,7 +7,6 @@ module.exports.listingSchema = Joi.object({
         location : Joi.string().required(),
         country : Joi.string().required(),
         price : Joi.number().required().min(0),
-        image : Joi.string().allow("",null),
         // Phase 11 — Advanced Search & Smart Filters (all optional, backward compatible)
         city : Joi.string().allow('', null).optional(),
         roomType : Joi.string().valid('Single Room', 'Shared Room', 'PG', '1RK', '1BHK', '2BHK').allow('', null).optional(),
@@ -55,7 +54,6 @@ module.exports.messSchema = Joi.object({
         mapLocation : Joi.string().allow('', null).max(500),
         contactNumber : Joi.string().allow('', null).max(30),
         availability : Joi.string().valid('Available', 'Closed').allow('', null),
-        image : Joi.string().allow("",null),
     }).required()
 });
 
@@ -76,7 +74,6 @@ module.exports.laundrySchema = Joi.object({
         mapLocation : Joi.string().allow('', null).max(500),
         contactNumber : Joi.string().allow('', null).max(30),
         availability : Joi.string().valid('Available', 'Closed').allow('', null),
-        image : Joi.string().allow("",null),
     }).required()
 });
 
@@ -100,6 +97,5 @@ module.exports.vehicleSchema = Joi.object({
         location : Joi.string().allow('', null).max(200),
         mapLocation : Joi.string().allow('', null).max(500),
         contactNumber : Joi.string().allow('', null).max(30),
-        image : Joi.string().allow("",null),
     }).required()
 });

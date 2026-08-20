@@ -112,7 +112,7 @@
               <a href="/vehicles/<%= vehicle._id %>" class="vehicle-link">
                 <div class="card vehicle-card h-100">
                   <div class="position-relative overflow-hidden">
-                    <img src="<%= vehicle.image.url %>" class="card-img-top" alt="<%= vehicle.name %>">
+                    <img src="<%= (vehicle.images && vehicle.images.length > 0) ? vehicle.images[0].url : (vehicle.image ? vehicle.image.url : '') %>" class="card-img-top" alt="<%= vehicle.name %>">
                     <div class="vehicle-card-badge">
                       <span class="badge bg-<%= vehicle.vehicleType === 'Car' ? 'primary' : 'success' %>"><%= vehicle.vehicleType %></span>
                     </div>

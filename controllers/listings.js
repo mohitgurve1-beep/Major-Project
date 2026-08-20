@@ -1,7 +1,17 @@
 const mongoose = require("mongoose");
 const Listing = require("../models/listing");
 const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
+const { cloudinary } = require("../cloudConfig.js");
 const { notifyUser } = require("../utils/notify.js");
+
+// Migrate old single image field to images array (backward compatibility)
+const normalizeImages = (item) => {
+    if (!item) return;
+    if ((!item.images || item.images.length === 0) && item.image && item.image.url) {
+        item.images = [{ url: item.image.url, filename: item.image.filename }];
+    }
+    if (!item.images) item.images = [];
+};
 
 const getGeocodingClient = () => {
     const mapToken = process.env.MAP_TOKEN;
@@ -361,13 +371,13 @@ module.exports.createListing = async (req, res) => {
         }
     }
 
-    const url = req.file.path;
-    const filename = req.file.filename;
-
     const newListing = new Listing(req.body.listing);
 
     newListing.owner = req.user._id;
-    newListing.image = { url, filename };
+    newListing.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
+    if (newListing.images.length > 0) {
+        newListing.image = { url: newListing.images[0].url, filename: newListing.images[0].filename };
+    }
     newListing.geometry = geometry;
 
     await newListing.save();
@@ -386,12 +396,10 @@ module.exports.renderEditForm = async (req, res) => {
         return res.redirect("/listings");
     }
 
-    let originalImageUrl = listing.image.url;
-    originalImageUrl = originalImageUrl.replace("/upload", "/upload/w_250");
+    normalizeImages(listing);
 
     res.render("listings/edit.ejs", {
         listing,
-        originalImageUrl,
         roomTypes: ROOM_TYPES,
         furnishingOptions: FURNISHING_OPTIONS,
         genderOptions: GENDER_OPTIONS,
@@ -403,18 +411,36 @@ module.exports.renderEditForm = async (req, res) => {
 module.exports.updateListing = async (req, res) => {
     let { id } = req.params;
 
-    let listing = await Listing.findByIdAndUpdate(id, {
-        ...req.body.listing,
-    });
+    let listing = await Listing.findById(id);
 
-    if (req.file) {
-        listing.image = {
-            url: req.file.path,
-            filename: req.file.filename,
-        };
-
-        await listing.save();
+    if (!listing) {
+        req.flash("error", "Listing you requested does not exist!");
+        return res.redirect("/listings");
     }
+
+    Object.assign(listing, req.body.listing);
+
+    // Handle image deletion
+    if (req.body.deleteImages && req.body.deleteImages.length > 0) {
+        const deleteIds = Array.isArray(req.body.deleteImages) ? req.body.deleteImages : [req.body.deleteImages];
+        for (let filename of deleteIds) {
+            await cloudinary.uploader.destroy(filename);
+        }
+        listing.images = listing.images.filter(img => !deleteIds.includes(img.filename));
+    }
+
+    // Add newly uploaded images
+    if (req.files && req.files.length > 0) {
+        const newImages = req.files.map(f => ({ url: f.path, filename: f.filename }));
+        listing.images.push(...newImages);
+    }
+
+    // Sync backward-compat image field
+    if (listing.images.length > 0) {
+        listing.image = { url: listing.images[0].url, filename: listing.images[0].filename };
+    }
+
+    await listing.save();
 
     req.flash("success", "Listing Updated!");
     res.redirect(`/listings/${id}`);
@@ -423,7 +449,16 @@ module.exports.updateListing = async (req, res) => {
 module.exports.destroyListing = async (req, res) => {
     let { id } = req.params;
 
-    await Listing.findByIdAndDelete(id);
+    const listing = await Listing.findById(id);
+    if (listing) {
+        // Clean up all Cloudinary images
+        for (let img of listing.images) {
+            if (img.filename) {
+                await cloudinary.uploader.destroy(img.filename);
+            }
+        }
+        await Listing.findByIdAndDelete(id);
+    }
 
     req.flash("success", "Listing Deleted!");
     res.redirect("/listings");

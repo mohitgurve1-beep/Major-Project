@@ -1,5 +1,15 @@
 const mongoose = require("mongoose");
 const Vehicle = require("../models/vehicle");
+const { cloudinary } = require("../cloudConfig.js");
+
+// Migrate old single image field to images array (backward compatibility)
+const normalizeImages = (item) => {
+    if (!item) return;
+    if ((!item.images || item.images.length === 0) && item.image && item.image.url) {
+        item.images = [{ url: item.image.url, filename: item.image.filename }];
+    }
+    if (!item.images) item.images = [];
+};
 
 // Admin-visible options for select dropdowns
 const VEHICLE_TYPES = ['Car', 'Bike', 'Scooter'];
@@ -148,13 +158,13 @@ module.exports.showVehicle = async (req, res) => {
 };
 
 module.exports.createVehicle = async (req, res) => {
-    const url = req.file.path;
-    const filename = req.file.filename;
-
     const newVehicle = new Vehicle(req.body.vehicle);
 
     newVehicle.owner = req.user._id;
-    newVehicle.image = { url, filename };
+    newVehicle.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
+    if (newVehicle.images.length > 0) {
+        newVehicle.image = { url: newVehicle.images[0].url, filename: newVehicle.images[0].filename };
+    }
 
     await newVehicle.save();
 
@@ -172,12 +182,10 @@ module.exports.renderEditForm = async (req, res) => {
         return res.redirect("/vehicles");
     }
 
-    let originalImageUrl = vehicle.image.url;
-    originalImageUrl = originalImageUrl.replace("/upload", "/upload/w_250");
+    normalizeImages(vehicle);
 
     res.render("vehicles/edit.ejs", {
         vehicle,
-        originalImageUrl,
         vehicleTypes: VEHICLE_TYPES,
         fuelTypes: FUEL_TYPES,
         gearTypes: GEAR_TYPES,
@@ -188,15 +196,33 @@ module.exports.renderEditForm = async (req, res) => {
 module.exports.updateVehicle = async (req, res) => {
     let { id } = req.params;
 
-    let vehicle = await Vehicle.findByIdAndUpdate(id, {
-        ...req.body.vehicle,
-    });
+    let vehicle = await Vehicle.findById(id);
 
-    if (req.file) {
-        vehicle.image = {
-            url: req.file.path,
-            filename: req.file.filename,
-        };
+    if (!vehicle) {
+        req.flash("error", "Vehicle you requested does not exist!");
+        return res.redirect("/vehicles");
+    }
+
+    Object.assign(vehicle, req.body.vehicle);
+
+    // Handle image deletion
+    if (req.body.deleteImages && req.body.deleteImages.length > 0) {
+        const deleteIds = Array.isArray(req.body.deleteImages) ? req.body.deleteImages : [req.body.deleteImages];
+        for (let filename of deleteIds) {
+            await cloudinary.uploader.destroy(filename);
+        }
+        vehicle.images = vehicle.images.filter(img => !deleteIds.includes(img.filename));
+    }
+
+    // Add newly uploaded images
+    if (req.files && req.files.length > 0) {
+        const newImages = req.files.map(f => ({ url: f.path, filename: f.filename }));
+        vehicle.images.push(...newImages);
+    }
+
+    // Sync backward-compat image field
+    if (vehicle.images.length > 0) {
+        vehicle.image = { url: vehicle.images[0].url, filename: vehicle.images[0].filename };
     }
 
     await vehicle.save();
@@ -208,7 +234,15 @@ module.exports.updateVehicle = async (req, res) => {
 module.exports.destroyVehicle = async (req, res) => {
     let { id } = req.params;
 
-    await Vehicle.findByIdAndDelete(id);
+    const vehicle = await Vehicle.findById(id);
+    if (vehicle) {
+        for (let img of vehicle.images) {
+            if (img.filename) {
+                await cloudinary.uploader.destroy(img.filename);
+            }
+        }
+        await Vehicle.findByIdAndDelete(id);
+    }
 
     req.flash("success", "Vehicle Deleted!");
     res.redirect("/vehicles");

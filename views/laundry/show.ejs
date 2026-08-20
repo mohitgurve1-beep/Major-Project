@@ -1,4 +1,13 @@
 <% layout("/layouts/boilerplate") %>
+<%
+  let allImages = [];
+  if(laundry.images && laundry.images.length > 0) {
+    allImages = laundry.images;
+  } else if(laundry.image && laundry.image.url) {
+    allImages = [laundry.image];
+  }
+  let mainImage = allImages.length > 0 ? allImages[0] : null;
+%>
 
 <!-- ============================================ -->
 <!-- LAUNDRY PAGE HEADER                          -->
@@ -30,9 +39,18 @@
   <div class="col-lg-8">
     <!-- Gallery -->
     <div class="gallery-section">
-      <div class="gallery-main">
-        <img id="laundryGalleryMain" src="<%= laundry.image.url %>" alt="<%= laundry.name %>" class="w-100">
-      </div>
+      <% if(mainImage) { %>
+        <div class="gallery-main">
+          <img id="laundryGalleryMain" src="<%= mainImage.url %>" alt="<%= laundry.name %>" class="w-100">
+        </div>
+      <% } %>
+      <% if(allImages.length > 1) { %>
+        <div class="gallery-thumbs">
+          <% for(let i = 0; i < allImages.length && i < 5; i++) { %>
+            <img src="<%= allImages[i].url %>" class="gallery-thumb <%= i === 0 ? 'active' : '' %>" alt="View <%= i + 1 %>" onclick="document.getElementById('laundryGalleryMain').src=this.src; document.querySelectorAll('.gallery-thumb').forEach(t=>t.classList.remove('active')); this.classList.add('active');">
+          <% } %>
+        </div>
+      <% } %>
     </div>
 
     <!-- Laundry Info Grid -->

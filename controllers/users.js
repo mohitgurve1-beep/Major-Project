@@ -36,6 +36,10 @@ module.exports.login = async(req,res) => {
         res.redirect(redirectUrl);
 };
 
+module.exports.renderAboutPage = (req, res) => {
+    res.render("about/about.ejs");
+};
+
 module.exports.logout = (req,res,next) => {
     req.logout((err) => {
         if(err) {

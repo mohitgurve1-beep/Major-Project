@@ -55,7 +55,7 @@
       <div class="col">
         <div class="card mess-card h-100 verification-card">
           <div class="position-relative overflow-hidden">
-            <img src="<%= mess.image.url %>" class="card-img-top" alt="<%= mess.name %>">
+            <img src="<%= (mess.images && mess.images.length > 0) ? mess.images[0].url : (mess.image ? mess.image.url : '') %>" class="card-img-top" alt="<%= mess.name %>">
             <div class="mess-card-badge">
               <% if(mess.availability === 'Available') { %>
                 <span class="badge bg-success">Available</span>

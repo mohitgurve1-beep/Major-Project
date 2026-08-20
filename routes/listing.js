@@ -6,7 +6,7 @@ const {isLoggedIn, isOwner, validateListing, isOwnerRole, isNotOwner, isListingO
 
 const listingController = require("../controllers/listings.js");
 const multer  = require('multer');
-const {storage} = require("../cloudConfig.js");
+const {storage, MAX_FILES} = require("../cloudConfig.js");
 const upload = multer({storage});
 
 
@@ -15,7 +15,7 @@ router.route("/")
   .post(
     isLoggedIn,
     isOwnerRole,
-    upload.single("listing[image]"),
+    upload.array("images", 10),
     wrapAsync(listingController.createListing),
     validateListing,
   );
@@ -31,7 +31,7 @@ router.get("/owner/visit-requests", isLoggedIn, isOwnerRole, wrapAsync(listingCo
 
 router.route("/:id")
    .get(wrapAsync(listingController.showListing))
-   .put(isLoggedIn, isOwnerRole, isOwner, upload.single("listing[image]"), wrapAsync(listingController.updateListing), validateListing)
+   .put(isLoggedIn, isOwnerRole, isOwner, upload.array("images", 10), wrapAsync(listingController.updateListing), validateListing)
    .delete(isLoggedIn, isOwnerRole, isOwner, wrapAsync(listingController.destroyListing));
 
 

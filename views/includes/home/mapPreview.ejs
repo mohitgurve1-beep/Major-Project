@@ -3,7 +3,7 @@
   // Reuses existing Mapbox integration. Multi-marker map. No backend changes.
   const mapRooms = typeof allListings !== 'undefined' ? allListings.filter(l => l.geometry && l.geometry.coordinates && l.geometry.coordinates.length === 2) : [];
   const mapRoomsForJs = mapRooms.slice(0, 12).map(l => ({
-    id: l._id, title: l.title, price: l.price, img: (l.image && l.image.url) || '', lat: l.geometry.coordinates[1], lng: l.geometry.coordinates[0]
+    id: l._id, title: l.title, price: l.price, img: (l.images && l.images.length > 0) ? l.images[0].url : ((l.image && l.image.url) || ''), lat: l.geometry.coordinates[1], lng: l.geometry.coordinates[0]
   }));
   const mapToken = process.env.MAP_TOKEN;
   const mapDataEncoded = encodeURIComponent(JSON.stringify(mapRoomsForJs));
@@ -26,7 +26,7 @@
             <h6 class="home-map-list-title"><i class="fa-solid fa-location-dot"></i> Nearby Available Rooms</h6>
             <% mapRooms.slice(0,5).forEach(r => { %>
               <a href="/listings/<%= r._id %>" class="home-map-list-item">
-                <img src="<%= r.image.url %>" alt="<%= r.title %>">
+                <img src="<%= (r.images && r.images.length > 0) ? r.images[0].url : (r.image ? r.image.url : '') %>" alt="<%= r.title %>">
                 <div class="flex-grow-1">
                   <strong><%= r.title %></strong>
                   <small><i class="fa-solid fa-location-dot"></i> <%= r.location %></small>

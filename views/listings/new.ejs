@@ -16,9 +16,9 @@
         </div>
 
         <div class="mb-3">
-            <label for="image" class="form-label">Upload listing image</label>
-            <input type="file" name="listing[image]" class="form-control">
-            required
+            <label for="images" class="form-label">Upload listing images (up to 10)</label>
+            <input type="file" name="images" class="form-control" multiple accept="image/*" id="images">
+            <small class="text-muted">You can select multiple images at once. Max 10 images, 8MB each.</small>
         </div>
         
         <div class="row">

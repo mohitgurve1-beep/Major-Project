@@ -14,7 +14,7 @@ router.route("/")
   .post(
     isLoggedIn,
     isLaundryOwnerRole,
-    upload.single("laundry[image]"),
+    upload.array("images", 10),
     validateLaundry,
     wrapAsync(laundryController.createLaundry),
   );
@@ -31,9 +31,9 @@ router.route("/:id")
      isLoggedIn,
      isLaundryOwnerRole,
      isLaundryOwner,
-     upload.single("laundry[image]"),
-     validateLaundry,
-     wrapAsync(laundryController.updateLaundry),
+      upload.array("images", 10),
+      validateLaundry,
+      wrapAsync(laundryController.updateLaundry),
    )
    .delete(isLoggedIn, isLaundryOwnerRole, isLaundryOwner, wrapAsync(laundryController.destroyLaundry));
 
