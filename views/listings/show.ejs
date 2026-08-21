@@ -173,7 +173,7 @@
       <% } else if(currUser) { %>
         <% if(typeof existingRequest !== 'undefined' && existingRequest) { %>
           <div class="alert alert-info d-flex justify-content-between align-items-center mb-0">
-            <span><strong>Visit Requested</strong> — Pending approval</span>
+            <span><strong><%= existingRequest.status === 'accepted' ? 'Visit accepted' : 'Visit requested' %></strong> — <%= existingRequest.status === 'accepted' ? 'Your visit is scheduled' : 'Pending owner approval' %></span>
             <form action="/listings/<%= listing._id %>/visit-request/<%= existingRequest._id %>/cancel" method="POST" style="display:inline;">
               <button class="btn btn-sm btn-outline-danger">Cancel Request</button>
             </form>
@@ -306,6 +306,9 @@
       </div>
       <% if(currUser && !(listing.owner && listing.owner._id && listing.owner._id.equals(currUser._id))) { %>
         <a href="#visitDate" class="btn btn-book mb-2"><i class="fa-regular fa-calendar-check"></i> Request Visit</a>
+        <% if(currUser.role === 'student') { %>
+          <a href="/payments/checkout/<%= listing._id %>" class="btn btn-success w-100 mb-2"><i class="fa-solid fa-lock"></i> Book & Pay</a>
+        <% } %>
       <% } %>
       <button class="btn btn-outline-dark w-100" style="border-radius: 50px;" onclick="alert('Contact: <%= listing.owner ? listing.owner.username : 'N/A' %>')">
         <i class="fa-regular fa-message"></i> Contact Owner

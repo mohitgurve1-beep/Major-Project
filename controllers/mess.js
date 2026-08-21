@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Mess = require("../models/mess");
+const { getPendingOwnerPayments } = require("./payments");
 const { cloudinary } = require("../cloudConfig.js");
 
 // Migrate old single image field to images array (backward compatibility)
@@ -248,7 +249,10 @@ module.exports.destroyMess = async (req, res) => {
 
 module.exports.renderOwnerMessDashboard = async (req, res) => {
     const ownerId = req.user._id;
-    const allMesses = await Mess.find({ owner: ownerId }).populate("owner");
+    const [allMesses, pendingPayments] = await Promise.all([
+        Mess.find({ owner: ownerId }).populate("owner"),
+        getPendingOwnerPayments(ownerId),
+    ]);
 
     const totalMesses = allMesses.length;
     const availableCount = allMesses.filter((m) => m.availability === 'Available').length;
@@ -259,6 +263,8 @@ module.exports.renderOwnerMessDashboard = async (req, res) => {
         totalMesses,
         availableCount,
         closedCount,
+        pendingPayments,
+        returnTo: "/messes/owner/dashboard",
     });
 };
 

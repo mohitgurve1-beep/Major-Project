@@ -94,6 +94,14 @@ module.exports.isOwnerRole = (req,res,next) => {
     next();
 };
 
+module.exports.isStudentRole = (req,res,next) => {
+    if(!req.user || req.user.role !== 'student'){
+        req.flash("error", "Only students can start a booking payment.");
+        return res.redirect("/listings");
+    }
+    next();
+};
+
 module.exports.validateVisitRequest = (req,res,next) => {
     let {error} = visitRequestSchema.validate(req.body);
     if(error){

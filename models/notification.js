@@ -27,6 +27,7 @@ const notificationSchema = new Schema({
             'booking_cancelled',
             'room_deleted',
             'room_reported',
+            'payment',
         ],
         required: true,
     },

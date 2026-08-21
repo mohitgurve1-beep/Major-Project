@@ -91,6 +91,11 @@
                 <li><a class="dropdown-item" href="/notifications"><i class="fa-regular fa-bell"></i> Notifications</a></li>
                 <% if(currUser.role === 'owner') { %>
                   <li><a class="dropdown-item" href="/listings/owner/dashboard"><i class="fa-solid fa-gauge-high"></i> Dashboard</a></li>
+                  <li><a class="dropdown-item" href="/payments/owner"><i class="fa-solid fa-wallet"></i> Wallet</a></li>
+                <% } else if(currUser.role === 'student') { %>
+                  <li><a class="dropdown-item" href="/payments/my"><i class="fa-solid fa-receipt"></i> My payments</a></li>
+                <% } else if(currUser.role === 'admin') { %>
+                  <li><a class="dropdown-item" href="/admin"><i class="fa-solid fa-shield-halved"></i> Admin panel</a></li>
                 <% } %>
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item text-danger" href="/logout"><i class="fa-solid fa-right-from-bracket"></i> Log out</a></li>

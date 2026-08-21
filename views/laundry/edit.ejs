@@ -105,6 +105,7 @@
                 <input type="text" name="laundry[mapLocation]" id="mapLocation" value="<%= laundry.mapLocation || '' %>" class="form-control">
             </div>
 
+            <div class="border rounded p-3 mb-3 bg-light"><strong>Booking payment policy</strong><div class="row mt-2"><div class="col-md-6"><select name="laundry[bookingPayment]" class="form-select"><option value="full" <%= laundry.bookingPayment === 'full' ? 'selected' : '' %>>Require full payment</option><option value="advance" <%= laundry.bookingPayment === 'advance' ? 'selected' : '' %>>Require minimum advance</option><option value="none" <%= laundry.bookingPayment === 'none' ? 'selected' : '' %>>No advance — booking request only</option></select></div><div class="col-md-6"><input type="number" min="0" name="laundry[minimumAdvance]" value="<%= laundry.minimumAdvance || '' %>" class="form-control" placeholder="Minimum advance amount (₹)"></div></div></div>
             <div class="mb-3">
                 <label for="availability" class="form-label">Availability</label>
                 <select name="laundry[availability]" id="availability" class="form-select">

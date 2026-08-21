@@ -166,6 +166,7 @@
       <% if(isOwnerOfMess) { %>
         <a href="/messes/<%= mess._id %>/edit" class="btn btn-book mb-2"><i class="fa-solid fa-pen"></i> Edit Mess</a>
       <% } else { %>
+        <% if(currUser && currUser.role === 'student') { %><a href="/payments/checkout/mess/<%= mess._id %>" class="btn btn-success w-100 mb-2"><i class="fa-solid fa-lock"></i> Subscribe & Pay</a><% } %>
         <a href="tel:<%= mess.contactNumber || '' %>" class="btn btn-book mb-2"><i class="fa-solid fa-phone"></i> Contact for Booking</a>
       <% } %>
       <hr>

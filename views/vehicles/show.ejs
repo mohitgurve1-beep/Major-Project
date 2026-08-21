@@ -176,6 +176,7 @@
       <% if(isOwnerOfVehicle) { %>
         <a href="/vehicles/<%= vehicle._id %>/edit" class="btn btn-book mb-2"><i class="fa-solid fa-pen"></i> Edit Vehicle</a>
       <% } else { %>
+        <% if(currUser && currUser.role === 'student') { %><a href="/payments/checkout/vehicle/<%= vehicle._id %>" class="btn btn-success w-100 mb-2"><i class="fa-solid fa-lock"></i> Rent & Pay</a><% } %>
         <a href="tel:<%= vehicle.contactNumber || '' %>" class="btn btn-book mb-2"><i class="fa-solid fa-phone"></i> Contact for Rental</a>
       <% } %>
       <hr>

@@ -178,6 +178,7 @@
       <% if(isOwnerOfLaundry) { %>
         <a href="/laundry/<%= laundry._id %>/edit" class="btn btn-book mb-2"><i class="fa-solid fa-pen"></i> Edit Service</a>
       <% } else { %>
+        <% if(currUser && currUser.role === 'student') { %><a href="/payments/checkout/laundry/<%= laundry._id %>" class="btn btn-success w-100 mb-2"><i class="fa-solid fa-lock"></i> Book & Pay</a><% } %>
         <a href="tel:<%= laundry.contactNumber || '' %>" class="btn btn-book mb-2"><i class="fa-solid fa-phone"></i> Contact for Service</a>
       <% } %>
       <hr>

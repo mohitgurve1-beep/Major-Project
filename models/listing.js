@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+               const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const Review = require("./review.js");
 const { ref, string, number } = require("joi");
@@ -22,6 +22,8 @@ const listingSchema = new Schema({
         },
     ],
     price : Number,
+    bookingPayment: { type: String, enum: ['full', 'advance', 'flexible', 'none'], default: 'full' },
+    minimumAdvance: { type: Number, min: 0, default: 0 },
     location : String,
     country : String,
     // Phase 11 — Advanced Search & Smart Filters (additive, optional, safe defaults)

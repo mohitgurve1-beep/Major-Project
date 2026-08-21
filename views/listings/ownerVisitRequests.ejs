@@ -62,12 +62,14 @@
                   <span class="badge bg-secondary status-badge">Completed</span>
                 <% } %>
               </div>
+            </div>
 
             <div class="row mb-3">
               <div class="col-6">
                 <p class="mb-1 small text-muted"><i class="fa-regular fa-calendar"></i> Date</p>
                 <p class="mb-0"><%= new Date(request.date).toLocaleDateString("en-IN", { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }) %></p>
               </div>
+            </div>
               <div class="col-6">
                 <p class="mb-1 small text-muted"><i class="fa-regular fa-clock"></i> Time</p>
                 <p class="mb-0"><%= request.time %></p>
@@ -100,6 +102,7 @@
               </div>
             <% } %>
           </div>
+        </div>
       </div>
     <% } %>
   </div>

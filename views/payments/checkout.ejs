@@ -1,0 +1,41 @@
+<% layout("/layouts/boilerplate") %>
+<div class="container py-5" style="max-width:760px">
+  <div class="d-flex justify-content-between align-items-center mb-4"><div><h2 class="mb-1">Complete your payment</h2><p class="text-muted mb-0">Secure payment for <%= service.title || service.name %></p></div><a href="javascript:history.back()" class="btn btn-outline-secondary">Back</a></div>
+  <div class="card shadow-sm border-0"><div class="card-body p-4">
+    <div class="d-flex justify-content-between border-bottom pb-3 mb-3"><span><%= serviceLabel %></span><strong id="amountDisplay">₹<%= amount.toLocaleString('en-IN') %></strong></div>
+    <p class="small text-muted"><%= bookingPayment === 'none' ? 'The owner allows booking without an advance. Send your booking request now.' : bookingPayment === 'advance' ? 'This is the owner’s minimum advance. It must be paid online; the remaining balance will be shown as pending after payment.' : 'Choose how you want to pay. Online payments are verified by Razorpay. COD remains pending until the owner confirms receipt.' %></p>
+    <div id="paymentMessage" class="alert d-none"></div>
+    <% if(bookingPayment === 'flexible') { %><div class="mb-3"><label class="form-label fw-semibold">Choose payment amount</label><select id="paymentChoice" class="form-select"><option value="full">Pay full amount — ₹<%= fullAmount.toLocaleString('en-IN') %></option><option value="advance">Pay minimum advance — ₹<%= advanceAmount.toLocaleString('en-IN') %></option></select></div><% } %>
+    <div class="d-grid gap-3">
+      <% if(bookingPayment === 'none') { %>
+      <button id="noAdvanceBooking" class="btn btn-success btn-lg"><i class="fa-solid fa-calendar-check"></i> Request booking — no advance</button>
+      <% } else { %>
+      <button id="onlinePayment" class="btn btn-primary btn-lg" <%= razorpayKey ? '' : 'disabled' %>><i class="fa-solid fa-lock"></i> Pay securely online with Razorpay</button>
+      <% if(!razorpayKey) { %><small class="text-warning text-center">Online payments are being configured. COD is currently available.</small><% } %>
+      <% if(bookingPayment !== 'advance') { %><button id="codPayment" class="btn btn-outline-dark btn-lg"><i class="fa-solid fa-money-bill-wave"></i> Cash on Delivery / Pay owner directly</button><% } %>
+      <% } %>
+    </div>
+  </div></div>
+</div>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+const serviceId = '<%= service._id %>';
+const serviceType = '<%= serviceType %>';
+const paymentChoiceInput = document.getElementById('paymentChoice');
+const paymentChoice = () => paymentChoiceInput ? paymentChoiceInput.value : 'full';
+if(paymentChoiceInput) paymentChoiceInput.onchange = () => { document.getElementById('amountDisplay').textContent = '₹' + (paymentChoiceInput.value === 'advance' ? <%= advanceAmount %> : <%= fullAmount %>).toLocaleString('en-IN'); };
+const message = document.getElementById('paymentMessage');
+function showMessage(text, type='danger'){ message.textContent = text; message.className = 'alert alert-' + type; }
+async function api(url, body) { const r = await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}); const data=await r.json(); if(!r.ok) throw new Error(data.error||'Something went wrong.'); return data; }
+const codButton = document.getElementById('codPayment');
+if(codButton) codButton.onclick = async () => { try { const data=await api('/payments/create',{serviceId,serviceType,paymentChoice:paymentChoice(),method:'cod'}); location.href=data.redirect; } catch(e){showMessage(e.message)} };
+const noAdvanceButton = document.getElementById('noAdvanceBooking');
+if(noAdvanceButton) noAdvanceButton.onclick = async () => { try { const data=await api('/payments/create',{serviceId,serviceType,method:'none'}); location.href=data.redirect; } catch(e){showMessage(e.message)} };
+const onlineButton = document.getElementById('onlinePayment');
+if(onlineButton) onlineButton.onclick = async () => { try {
+  const data=await api('/payments/create',{serviceId,serviceType,paymentChoice:paymentChoice(),method:'online'});
+  const checkout=new Razorpay({key:data.key,amount:data.order.amount,currency:data.order.currency,name:'StudentStay',description:'First month rent',order_id:data.order.id,prefill:{name:data.student.name,email:data.student.email,contact:data.student.contact},theme:{color:'#212529'},handler: async function(response){try {const result=await api('/payments/verify',{paymentId:data.paymentId,...response});location.href=result.redirect;}catch(e){showMessage(e.message)}}});
+  checkout.on('payment.failed', async function(){ try { await api('/payments/'+data.paymentId+'/fail',{}); } finally { showMessage('Payment failed. It is recorded in My payments, where you can try again from the room page.'); } });
+  checkout.open();
+} catch(e){showMessage(e.message)} };
+</script>

@@ -22,6 +22,8 @@ const notificationsRouter = require("./routes/notification.js");
 const messRouter = require("./routes/mess.js");
 const laundryRouter = require("./routes/laundry.js");
 const vehicleRouter = require("./routes/vehicle.js");
+const paymentRouter = require("./routes/payment.js");
+const adminRouter = require("./routes/admin.js");
 
 const dbUrl = process.env.ATLASDB_URL || "mongodb://127.0.0.1:27017/majorproject";
 
@@ -118,6 +120,8 @@ app.use("/notifications", notificationsRouter);
 app.use("/messes", messRouter);
 app.use("/laundry", laundryRouter);
 app.use("/vehicles", vehicleRouter);
+app.use("/payments", paymentRouter);
+app.use("/admin", adminRouter);
 app.use("/", userRouter);
 
 app.all("*", (req, res, next) => {

@@ -11,6 +11,7 @@
 <div class="d-flex gap-2">
       <a href="/listings/new" class="btn btn-dark"><i class="fa-solid fa-plus"></i> Add New Room</a>
 <a href="/listings/owner/visit-requests" class="btn btn-outline-primary"><i class="fa-solid fa-calendar-check"></i> Visit Requests</a>
+<a href="/payments/owner" class="btn btn-outline-success"><i class="fa-solid fa-wallet"></i> Wallet</a>
 <a href="/messes/owner/dashboard" class="btn btn-outline-success"><i class="fa-solid fa-utensils"></i> My Messes</a>
       <a href="/laundry/owner/dashboard" class="btn btn-outline-info"><i class="fa-solid fa-shirt"></i> My Laundry</a>
       <a href="/vehicles/owner/dashboard" class="btn btn-outline-warning"><i class="fa-solid fa-car"></i> My Vehicles</a>
@@ -27,7 +28,13 @@
       <div class="stat-label">Total Rooms</div>
     </div>
   </div>
+  <div class="col-md-4">
+    <a href="/payments/owner" class="text-decoration-none"><div class="dashboard-stat-card stat-card-total bg-light"><div class="stat-icon"><i class="fa-solid fa-wallet"></i></div><div class="stat-number">Wallet</div><div class="stat-label">Payment & COD management</div></div></a>
+  </div>
 </div>
+
+<!-- Pending Payments / COD -->
+<%- include("../payments/includes/pendingPayments.ejs") %>
 
 <!-- Chart Placeholder -->
 <div class="row mb-4">

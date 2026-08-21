@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Vehicle = require("../models/vehicle");
+const { getPendingOwnerPayments } = require("./payments");
 const { cloudinary } = require("../cloudConfig.js");
 
 // Migrate old single image field to images array (backward compatibility)
@@ -254,7 +255,10 @@ module.exports.destroyVehicle = async (req, res) => {
 
 module.exports.renderOwnerVehicleDashboard = async (req, res) => {
     const ownerId = req.user._id;
-    const allVehicles = await Vehicle.find({ owner: ownerId }).populate("owner");
+    const [allVehicles, pendingPayments] = await Promise.all([
+        Vehicle.find({ owner: ownerId }).populate("owner"),
+        getPendingOwnerPayments(ownerId),
+    ]);
 
     const totalVehicles = allVehicles.length;
     const availableCount = allVehicles.filter((v) => v.availability === 'Available').length;
@@ -267,5 +271,7 @@ module.exports.renderOwnerVehicleDashboard = async (req, res) => {
         availableCount,
         rentedCount,
         maintenanceCount,
+        pendingPayments,
+        returnTo: "/vehicles/owner/dashboard",
     });
 };

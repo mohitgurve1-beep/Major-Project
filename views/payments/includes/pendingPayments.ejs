@@ -1,0 +1,58 @@
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <h5 class="fw-bold mb-0">
+      <i class="fa-solid fa-hand-holding-dollar"></i> Pending Payments
+      <% if (pendingPayments.length) { %><span class="badge bg-warning text-dark"><%= pendingPayments.length %></span><% } %>
+    </h5>
+    <a href="/payments/owner" class="btn btn-sm btn-outline-success"><i class="fa-solid fa-wallet"></i> Open Wallet</a>
+  </div>
+  <% if (!pendingPayments.length) { %>
+    <div class="alert alert-light border mb-0">
+      <i class="fa-solid fa-circle-check text-success"></i> No COD or pending payments from students right now.
+    </div>
+  <% } else { %>
+    <div class="card shadow-sm border-0">
+      <div class="table-responsive">
+        <table class="table align-middle mb-0">
+          <thead>
+            <tr>
+              <th>Student</th>
+              <th>Service</th>
+              <th>Amount due</th>
+              <th>Method</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% pendingPayments.forEach(payment => { %>
+              <%
+                const due = payment.remainingAmount > 0 ? payment.remainingAmount : payment.amount;
+                const methodBadge = payment.method === 'cod' ? 'COD' : payment.method === 'none' ? 'No advance' : 'Online';
+                const methodColor = payment.method === 'cod' ? 'warning text-dark' : payment.method === 'none' ? 'secondary' : 'info';
+                const statusLabel = payment.status === 'pending_cod' ? 'Awaiting cash' : payment.status === 'booking_pending' ? 'Booking pending' : 'Balance pending';
+                const statusColor = payment.status === 'partially_paid' ? 'info' : 'warning text-dark';
+              %>
+              <tr>
+                <td><strong><%= payment.student?.username || 'Student' %></strong></td>
+                <td>
+                  <%= payment.service?.title || payment.service?.name || payment.listing?.title || 'Service removed' %>
+                  <br><small class="text-muted"><%= payment.description %></small>
+                </td>
+                <td>&#8377;<%= due.toLocaleString('en-IN') %></td>
+                <td><span class="badge bg-<%= methodColor %>"><%= methodBadge %></span></td>
+                <td><span class="badge bg-<%= statusColor %>"><%= statusLabel %></span></td>
+                <td>
+                  <form action="/payments/<%= payment._id %>/confirm-cod" method="POST" onsubmit="return confirm('Confirm that you have received this payment in cash?');">
+                    <input type="hidden" name="returnTo" value="<%= returnTo %>">
+                    <button class="btn btn-sm btn-success"><i class="fa-solid fa-check"></i> Accept payment</button>
+                  </form>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  <% } %>
+</div>

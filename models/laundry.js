@@ -25,6 +25,8 @@ const laundrySchema = new Schema({
         type : Number,
         min : 0,
     },
+    bookingPayment: { type: String, enum: ['full', 'advance', 'flexible', 'none'], default: 'full' },
+    minimumAdvance: { type: Number, min: 0, default: 0 },
     ironPrice : {
         type : Number,
         min : 0,

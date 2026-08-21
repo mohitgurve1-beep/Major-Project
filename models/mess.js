@@ -25,6 +25,8 @@ const messSchema = new Schema({
         type : Number,
         min : 0,
     },
+    bookingPayment: { type: String, enum: ['full', 'advance', 'flexible', 'none'], default: 'full' },
+    minimumAdvance: { type: Number, min: 0, default: 0 },
     mealType : {
         type : String,
         enum : ['Veg', 'Non-Veg', 'Both'],

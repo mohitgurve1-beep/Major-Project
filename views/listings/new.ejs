@@ -74,6 +74,7 @@
                     <% } %>
                 </select>
             </div>
+            <div class="col-12 border rounded p-3 mb-3 bg-light"><strong>Booking payment policy</strong><div class="row mt-2"><div class="col-md-6"><select name="listing[bookingPayment]" class="form-select"><option value="full">Require full payment</option><option value="advance">Require minimum advance</option><option value="flexible">Let student choose advance or full payment</option><option value="none">No advance — booking request only</option></select></div><div class="col-md-6"><input type="number" min="0" name="listing[minimumAdvance]" class="form-control" placeholder="Minimum advance amount (₹)"></div></div></div>
             <div class="mb-3 col-md-6">
                 <label for="availability" class="form-label">Availability</label>
                 <select name="listing[availability]" id="availability" class="form-select">

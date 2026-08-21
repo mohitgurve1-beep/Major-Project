@@ -106,6 +106,7 @@
                 <input type="text" name="mess[mapLocation]" id="mapLocation" value="<%= mess.mapLocation || '' %>" class="form-control">
             </div>
 
+            <div class="border rounded p-3 mb-3 bg-light"><strong>Booking payment policy</strong><div class="row mt-2"><div class="col-md-6"><select name="mess[bookingPayment]" class="form-select"><option value="full" <%= mess.bookingPayment === 'full' ? 'selected' : '' %>>Require full payment</option><option value="advance" <%= mess.bookingPayment === 'advance' ? 'selected' : '' %>>Require minimum advance</option><option value="none" <%= mess.bookingPayment === 'none' ? 'selected' : '' %>>No advance — booking request only</option></select></div><div class="col-md-6"><input type="number" min="0" name="mess[minimumAdvance]" value="<%= mess.minimumAdvance || '' %>" class="form-control" placeholder="Minimum advance amount (₹)"></div></div></div>
             <div class="mb-3">
                 <label for="availability" class="form-label">Availability</label>
                 <select name="mess[availability]" id="availability" class="form-select">

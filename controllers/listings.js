@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Listing = require("../models/listing");
+const { getPendingOwnerPayments } = require("../controllers/payments");
 const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
 const { cloudinary } = require("../cloudConfig.js");
 const { notifyUser } = require("../utils/notify.js");
@@ -332,12 +333,13 @@ module.exports.showListing = async (req, res) => {
     // Phase 12 — verification removed: all listings are publicly viewable.
     const isOwnerOfListing = listing.owner && listing.owner._id && req.user && listing.owner._id.equals(req.user._id);
 
-    // Check if current user has an existing pending visit request for this listing
+    // A student can only have one active visit request for a room at a time.
+    // Rejected/completed/cancelled requests do not block a new request.
     let existingRequest = null;
     if (req.user && !isOwnerOfListing) {
-        existingRequest = listing.visitRequests.find(
-            (vr) => vr.student && vr.student.toString() === req.user._id.toString() && vr.status === 'pending'
-        );
+        existingRequest = listing.visitRequests
+            .filter((vr) => vr.student && vr.student.toString() === req.user._id.toString() && ['pending', 'accepted'].includes(vr.status))
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0] || null;
     }
 
     res.render("listings/show.ejs", { listing, existingRequest });
@@ -470,13 +472,18 @@ module.exports.destroyListing = async (req, res) => {
 
 module.exports.renderOwnerDashboard = async (req, res) => {
     const ownerId = req.user._id;
-    const allListings = await Listing.find({ owner: ownerId }).populate("owner");
+    const [allListings, pendingPayments] = await Promise.all([
+        Listing.find({ owner: ownerId }).populate("owner"),
+        getPendingOwnerPayments(ownerId),
+    ]);
 
     const totalRooms = allListings.length;
 
     res.render("listings/ownerDashboard.ejs", {
         allListings,
         totalRooms,
+        pendingPayments,
+        returnTo: "/listings/owner/dashboard",
     });
 };
 
@@ -495,13 +502,13 @@ module.exports.sendVisitRequest = async (req, res) => {
         return res.redirect("/listings");
     }
 
-    // Check for duplicate pending request
+    // Do not create a second request while one is pending or already accepted.
     const existingRequest = listing.visitRequests.find(
-        (vr) => vr.student && vr.student.toString() === req.user._id.toString() && vr.status === 'pending'
+        (vr) => vr.student && vr.student.toString() === req.user._id.toString() && ['pending', 'accepted'].includes(vr.status)
     );
 
     if (existingRequest) {
-        req.flash("error", "You already have a pending visit request for this room.");
+        req.flash("error", "You already have an active visit request for this room.");
         return res.redirect(`/listings/${id}`);
     }
 
@@ -544,6 +551,11 @@ module.exports.cancelVisitRequest = async (req, res) => {
 
     if (!visitRequest) {
         req.flash("error", "Visit request not found.");
+        return res.redirect(`/listings/${id}`);
+    }
+
+    if (!['pending', 'accepted'].includes(visitRequest.status)) {
+        req.flash("error", "Only pending or accepted visit requests can be cancelled.");
         return res.redirect(`/listings/${id}`);
     }
 
@@ -607,13 +619,6 @@ module.exports.updateVisitRequestStatus = async (req, res) => {
     let { id, requestId } = req.params;
     let { status } = req.body;
 
-    // Only allow valid status transitions from owner
-    const validStatuses = ['accepted', 'rejected', 'completed'];
-    if (!validStatuses.includes(status)) {
-        req.flash("error", "Invalid status update.");
-        return res.redirect(`/listings/owner/visit-requests`);
-    }
-
     const listing = await Listing.findById(id);
 
     if (!listing) {
@@ -628,8 +633,9 @@ module.exports.updateVisitRequestStatus = async (req, res) => {
         return res.redirect(`/listings/owner/visit-requests`);
     }
 
-    if (visitRequest.status === 'cancelled') {
-        req.flash("error", "Cannot update a cancelled request.");
+    const transitions = { pending: ['accepted', 'rejected'], accepted: ['completed'] };
+    if (!transitions[visitRequest.status]?.includes(status)) {
+        req.flash("error", "This visit request cannot be updated to that status.");
         return res.redirect(`/listings/owner/visit-requests`);
     }
 

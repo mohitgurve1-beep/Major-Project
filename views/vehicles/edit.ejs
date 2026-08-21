@@ -137,6 +137,7 @@
                 <input type="text" name="vehicle[mapLocation]" id="mapLocation" placeholder="Google Maps link or coordinates" class="form-control" value="<%= vehicle.mapLocation || '' %>">
             </div>
 
+            <div class="border rounded p-3 mb-3 bg-light"><strong>Booking payment policy</strong><div class="row mt-2"><div class="col-md-6"><select name="vehicle[bookingPayment]" class="form-select"><option value="full" <%= vehicle.bookingPayment === 'full' ? 'selected' : '' %>>Require full payment</option><option value="advance" <%= vehicle.bookingPayment === 'advance' ? 'selected' : '' %>>Require minimum advance</option><option value="none" <%= vehicle.bookingPayment === 'none' ? 'selected' : '' %>>No advance — booking request only</option></select></div><div class="col-md-6"><input type="number" min="0" name="vehicle[minimumAdvance]" value="<%= vehicle.minimumAdvance || '' %>" class="form-control" placeholder="Minimum advance amount (₹)"></div></div></div>
             <div class="mb-3">
                 <label for="availability" class="form-label">Availability</label>
                 <select name="vehicle[availability]" id="availability" class="form-select">

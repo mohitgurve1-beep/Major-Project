@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Laundry = require("../models/laundry");
+const { getPendingOwnerPayments } = require("./payments");
 const { cloudinary } = require("../cloudConfig.js");
 
 // Migrate old single image field to images array (backward compatibility)
@@ -253,7 +254,10 @@ module.exports.destroyLaundry = async (req, res) => {
 
 module.exports.renderOwnerLaundryDashboard = async (req, res) => {
     const ownerId = req.user._id;
-    const allLaundries = await Laundry.find({ owner: ownerId }).populate("owner");
+    const [allLaundries, pendingPayments] = await Promise.all([
+        Laundry.find({ owner: ownerId }).populate("owner"),
+        getPendingOwnerPayments(ownerId),
+    ]);
 
     const totalLaundries = allLaundries.length;
     const availableCount = allLaundries.filter((l) => l.availability === 'Available').length;
@@ -264,5 +268,7 @@ module.exports.renderOwnerLaundryDashboard = async (req, res) => {
         totalLaundries,
         availableCount,
         closedCount,
+        pendingPayments,
+        returnTo: "/laundry/owner/dashboard",
     });
 };
