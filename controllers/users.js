@@ -31,6 +31,14 @@ module.exports.renderLoginForm = async(req,res) => {
 };
 
 module.exports.login = async(req,res) => {
+        // Passport only reaches this handler on successful authentication, so a
+        // blocked user is logged straight back out here.
+        if (req.user && req.user.blocked) {
+            return req.logout(() => {
+                req.flash("error", "Your account has been blocked by the admin. Please contact support.");
+                res.redirect("/login");
+            });
+        }
         req.flash("success", "Welcome back to Student Accommodation!");
         let redirectUrl = res.locals.redirectUrl || "/listings";
         res.redirect(redirectUrl);

@@ -1,0 +1,91 @@
+<% layout("/layouts/boilerplate") %>
+<div class="container py-5">
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+      <h2><i class="fa-solid fa-store"></i> Manage owner services</h2>
+      <p class="text-muted mb-0">Moderate every room, mess, laundry service, and vehicle on the platform.</p>
+    </div>
+    <a href="/admin" class="btn btn-outline-secondary"><i class="fa-solid fa-shield-halved"></i> Back to control centre</a>
+  </div>
+
+  <form class="row g-2 mb-3" method="GET" action="/admin/services">
+    <div class="col-auto">
+      <select name="type" class="form-select">
+        <option value="">All types</option>
+        <% Object.entries(typeLabels).forEach(([key, label]) => { %>
+          <option value="<%= key %>" <%= filters.type === key ? 'selected' : '' %>><%= label %>s</option>
+        <% }) %>
+      </select>
+    </div>
+    <div class="col-auto flex-grow-1">
+      <input type="text" name="q" class="form-control" placeholder="Search by service name or owner username" value="<%= filters.q %>">
+    </div>
+    <div class="col-auto">
+      <button class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i> Filter</button>
+      <% if(filters.type || filters.q) { %><a href="/admin/services" class="btn btn-outline-secondary">Clear</a><% } %>
+    </div>
+  </form>
+
+  <div class="card shadow-sm border-0">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead>
+          <tr>
+            <th>Service</th>
+            <th>Type</th>
+            <th>Owner</th>
+            <th>Price</th>
+            <th>Availability</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if(!services.length){ %><tr><td colspan="6" class="text-center py-5 text-muted">No services match this filter.</td></tr><% } %>
+          <% services.forEach(({ item, key, config }) => {
+              const img = (item.images && item.images.length) ? item.images[0].url : (item.image ? item.image.url : '');
+              const price = item[config.priceField];
+          %>
+            <tr>
+              <td>
+                <div class="d-flex align-items-center gap-2">
+                  <% if(img) { %><img src="<%= img %>" alt="" style="width:48px;height:48px;object-fit:cover;border-radius:8px;"><% } else { %><span class="d-inline-flex align-items-center justify-content-center bg-light rounded" style="width:48px;height:48px;"><i class="fa-regular fa-image text-muted"></i></span><% } %>
+                  <div>
+                    <strong><%= item[config.nameField] %></strong><br>
+                    <small class="text-muted"><%= item.city || item.location || '' %></small>
+                  </div>
+                </div>
+              </td>
+              <td><span class="badge bg-secondary"><%= config.label %></span></td>
+              <td>
+                <%= item.owner?.username || 'Owner removed' %>
+                <br><small class="text-muted"><%= item.owner?.email || '' %></small>
+              </td>
+              <td>&#8377;<%= Number(price || 0).toLocaleString('en-IN') %></td>
+              <td>
+                <form action="/admin/services/<%= key %>/<%= item._id %>/availability" method="POST" class="d-flex gap-1">
+                  <select name="availability" class="form-select form-select-sm" style="width:auto;">
+                    <% config.availabilities.forEach(a => { %>
+                      <option value="<%= a %>" <%= item.availability === a ? 'selected' : '' %>><%= a %></option>
+                    <% }) %>
+                  </select>
+                  <button class="btn btn-sm btn-outline-primary">Set</button>
+                </form>
+              </td>
+              <td>
+                <div class="d-flex gap-1 flex-wrap">
+                  <a href="/<%= config.path %>/<%= item._id %>" class="btn btn-sm btn-outline-dark"><i class="fa-solid fa-eye"></i> View</a>
+                  <a href="/<%= config.path %>/<%= item._id %>/edit" class="btn btn-sm btn-outline-warning"><i class="fa-solid fa-pen"></i> Edit</a>
+                  <form action="/admin/services/<%= key %>/<%= item._id %>?_method=DELETE" method="POST"
+                        onsubmit="return confirm('Delete <%= config.label %> \\<%= item[config.nameField] %>\\? Its images will also be removed. This cannot be undone.');">
+                    <button class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i> Delete</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <p class="small text-muted mt-3 mb-0"><i class="fa-solid fa-circle-info"></i> Admins can edit any service using the owner's own edit page. Deleting removes the service and its images permanently.</p>
+</div>

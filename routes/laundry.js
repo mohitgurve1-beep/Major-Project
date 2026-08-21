@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const wrapAsync = require("../utils/wrapAsync.js");
-const { isLoggedIn, isLaundryOwnerRole, isLaundryOwner, validateLaundry } = require("../middleware.js");
+const { isLoggedIn, isLaundryOwnerRole, validateLaundry, manageLaundryAccess } = require("../middleware.js");
 
 const laundryController = require("../controllers/laundry.js");
 const multer  = require('multer');
@@ -29,15 +29,14 @@ router.route("/:id")
    .get(wrapAsync(laundryController.showLaundry))
    .put(
      isLoggedIn,
-     isLaundryOwnerRole,
-     isLaundryOwner,
+     ...manageLaundryAccess,
       upload.array("images", 10),
       validateLaundry,
       wrapAsync(laundryController.updateLaundry),
    )
-   .delete(isLoggedIn, isLaundryOwnerRole, isLaundryOwner, wrapAsync(laundryController.destroyLaundry));
+   .delete(isLoggedIn, ...manageLaundryAccess, wrapAsync(laundryController.destroyLaundry));
 
 // Edit Route
-router.get("/:id/edit", isLoggedIn, isLaundryOwnerRole, isLaundryOwner, wrapAsync(laundryController.renderEditForm));
+router.get("/:id/edit", isLoggedIn, ...manageLaundryAccess, wrapAsync(laundryController.renderEditForm));
 
 module.exports = router;

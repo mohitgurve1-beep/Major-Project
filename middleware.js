@@ -266,3 +266,19 @@ module.exports.isVehicleOwner = async (req,res,next) => {
     }
     next();
 };
+
+// =====================
+// Admin moderation of owner services
+// Admins may view/edit/delete any owner's service; everyone else
+// falls through to the strict owner-role + ownership checks.
+// =====================
+
+const withAdminBypass = (strict) => (req,res,next) => {
+    if(req.user && req.user.role === 'admin') return next();
+    return strict(req,res,next);
+};
+
+module.exports.manageListingAccess = [withAdminBypass(module.exports.isOwnerRole), withAdminBypass(module.exports.isOwner)];
+module.exports.manageMessAccess = [withAdminBypass(module.exports.isMessOwnerRole), withAdminBypass(module.exports.isMessOwner)];
+module.exports.manageLaundryAccess = [withAdminBypass(module.exports.isLaundryOwnerRole), withAdminBypass(module.exports.isLaundryOwner)];
+module.exports.manageVehicleAccess = [withAdminBypass(module.exports.isVehicleOwnerRole), withAdminBypass(module.exports.isVehicleOwner)];

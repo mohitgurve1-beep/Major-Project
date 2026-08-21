@@ -28,6 +28,9 @@ const notificationSchema = new Schema({
             'room_deleted',
             'room_reported',
             'payment',
+            // Admin actions
+            'account_blocked',
+            'account_unblocked',
         ],
         required: true,
     },

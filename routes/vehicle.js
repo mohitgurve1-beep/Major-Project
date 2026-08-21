@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const wrapAsync = require("../utils/wrapAsync.js");
-const { isLoggedIn, isVehicleOwnerRole, isVehicleOwner, validateVehicle } = require("../middleware.js");
+const { isLoggedIn, isVehicleOwnerRole, validateVehicle, manageVehicleAccess } = require("../middleware.js");
 
 const vehicleController = require("../controllers/vehicle.js");
 const multer  = require('multer');
@@ -29,15 +29,14 @@ router.route("/:id")
    .get(wrapAsync(vehicleController.showVehicle))
    .put(
      isLoggedIn,
-     isVehicleOwnerRole,
-     isVehicleOwner,
+     ...manageVehicleAccess,
       upload.array("images", 10),
       validateVehicle,
       wrapAsync(vehicleController.updateVehicle),
    )
-   .delete(isLoggedIn, isVehicleOwnerRole, isVehicleOwner, wrapAsync(vehicleController.destroyVehicle));
+   .delete(isLoggedIn, ...manageVehicleAccess, wrapAsync(vehicleController.destroyVehicle));
 
 // Edit Route
-router.get("/:id/edit", isLoggedIn, isVehicleOwnerRole, isVehicleOwner, wrapAsync(vehicleController.renderEditForm));
+router.get("/:id/edit", isLoggedIn, ...manageVehicleAccess, wrapAsync(vehicleController.renderEditForm));
 
 module.exports = router;

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const wrapAsync = require("../utils/wrapAsync.js");
-const {isLoggedIn, isOwner, validateListing, isOwnerRole, isNotOwner, isListingOwner, isVisitRequestOwner, validateVisitRequest} = require("../middleware.js");
+const {isLoggedIn, validateListing, isOwnerRole, isNotOwner, isListingOwner, isVisitRequestOwner, validateVisitRequest, manageListingAccess} = require("../middleware.js");
 
 const listingController = require("../controllers/listings.js");
 const multer  = require('multer');
@@ -31,13 +31,13 @@ router.get("/owner/visit-requests", isLoggedIn, isOwnerRole, wrapAsync(listingCo
 
 router.route("/:id")
    .get(wrapAsync(listingController.showListing))
-   .put(isLoggedIn, isOwnerRole, isOwner, upload.array("images", 10), wrapAsync(listingController.updateListing), validateListing)
-   .delete(isLoggedIn, isOwnerRole, isOwner, wrapAsync(listingController.destroyListing));
+   .put(isLoggedIn, ...manageListingAccess, upload.array("images", 10), wrapAsync(listingController.updateListing), validateListing)
+   .delete(isLoggedIn, ...manageListingAccess, wrapAsync(listingController.destroyListing));
 
 
 
 //Edit Route
-router.get("/:id/edit", isLoggedIn, isOwnerRole, isOwner, wrapAsync(listingController.renderEditForm));
+router.get("/:id/edit", isLoggedIn, ...manageListingAccess, wrapAsync(listingController.renderEditForm));
 
 // Visit Request Routes
 router.post("/:id/visit-request", isLoggedIn, isNotOwner, validateVisitRequest, wrapAsync(listingController.sendVisitRequest));

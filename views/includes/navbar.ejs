@@ -96,6 +96,8 @@
                   <li><a class="dropdown-item" href="/payments/my"><i class="fa-solid fa-receipt"></i> My payments</a></li>
                 <% } else if(currUser.role === 'admin') { %>
                   <li><a class="dropdown-item" href="/admin"><i class="fa-solid fa-shield-halved"></i> Admin panel</a></li>
+                  <li><a class="dropdown-item" href="/admin/users"><i class="fa-solid fa-users-gear"></i> Manage users</a></li>
+                  <li><a class="dropdown-item" href="/admin/services"><i class="fa-solid fa-store"></i> Manage services</a></li>
                 <% } %>
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item text-danger" href="/logout"><i class="fa-solid fa-right-from-bracket"></i> Log out</a></li>

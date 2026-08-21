@@ -93,6 +93,13 @@ app.use(async (req, res, next) => {
     res.locals.unreadNotifications = 0;
     res.locals.latestNotifications = [];
 
+    // Blocked accounts are logged out on their very next request.
+    if (req.user && req.user.blocked) {
+        req.logout(() => {});
+        req.flash("error", "Your account has been blocked by the admin. Please contact support.");
+        return res.redirect("/login");
+    }
+
     if (req.user) {
         try {
             const [unreadCount, latestNotifications] = await Promise.all([

@@ -1,0 +1,99 @@
+<% layout("/layouts/boilerplate") %>
+<div class="container py-5">
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+      <h2><i class="fa-solid fa-users-gear"></i> Manage users</h2>
+      <p class="text-muted mb-0">Block, unblock, or permanently remove students and owners.</p>
+    </div>
+    <a href="/admin" class="btn btn-outline-secondary"><i class="fa-solid fa-shield-halved"></i> Back to control centre</a>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <div class="col-md-4"><div class="card border-0 bg-dark text-white"><div class="card-body"><small>Owners</small><h3 class="mb-0"><%= roleCounts.owners %></h3></div></div></div>
+    <div class="col-md-4"><div class="card border-0 bg-primary text-white"><div class="card-body"><small>Students</small><h3 class="mb-0"><%= roleCounts.students %></h3></div></div></div>
+    <div class="col-md-4"><div class="card border-0 bg-danger text-white"><div class="card-body"><small>Blocked accounts</small><h3 class="mb-0"><%= roleCounts.blocked %></h3></div></div></div>
+  </div>
+
+  <form class="row g-2 mb-3" method="GET" action="/admin/users">
+    <div class="col-auto">
+      <select name="role" class="form-select">
+        <option value="">All roles</option>
+        <option value="student" <%= filters.role === 'student' ? 'selected' : '' %>>Students</option>
+        <option value="owner" <%= filters.role === 'owner' ? 'selected' : '' %>>Owners</option>
+        <option value="admin" <%= filters.role === 'admin' ? 'selected' : '' %>>Admins</option>
+      </select>
+    </div>
+    <div class="col-auto flex-grow-1">
+      <input type="text" name="q" class="form-control" placeholder="Search by username or email" value="<%= filters.q %>">
+    </div>
+    <div class="col-auto">
+      <button class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i> Filter</button>
+      <% if(filters.role || filters.q) { %><a href="/admin/users" class="btn btn-outline-secondary">Clear</a><% } %>
+    </div>
+  </form>
+
+  <div class="card shadow-sm border-0">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Role</th>
+            <th>Listings</th>
+            <th>Status</th>
+            <th>Joined</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if(!users.length){ %><tr><td colspan="6" class="text-center py-5 text-muted">No users match this filter.</td></tr><% } %>
+          <% users.forEach(user => { 
+              const counts = serviceCounts[user._id.toString()] || {};
+              const listingSummary = user.role === 'owner'
+                ? ['listing','mess','laundry','vehicle'].map(k => counts[k] ? `${counts[k]} ${k}` : null).filter(Boolean).join(', ') || '—'
+                : '—';
+          %>
+            <tr class="<%= user.blocked ? 'table-danger' : '' %>">
+              <td>
+                <strong><%= user.username %></strong>
+                <% if(user.blocked && user.blockReason) { %><br><small class="text-danger">Reason: <%= user.blockReason %></small><% } %>
+                <br><small class="text-muted"><%= user.email %></small>
+              </td>
+              <td><span class="badge bg-<%= user.role === 'admin' ? 'dark' : user.role === 'owner' ? 'success' : 'primary' %>"><%= user.role %></span></td>
+              <td><small><%= listingSummary %></small></td>
+              <td>
+                <% if(user.blocked) { %>
+                  <span class="badge bg-danger">Blocked</span>
+                  <% if(user.blockedAt) { %><br><small class="text-muted"><%= user.blockedAt.toLocaleDateString('en-IN') %></small><% } %>
+                <% } else { %>
+                  <span class="badge bg-success">Active</span>
+                <% } %>
+              </td>
+              <td><small><%= user.createdAt ? user.createdAt.toLocaleDateString('en-IN') : '—' %></small></td>
+              <td>
+                <% if(user.role !== 'admin') { %>
+                  <div class="d-flex gap-1 flex-wrap">
+                    <form action="/admin/users/<%= user._id %>/block" method="POST"
+                          onsubmit="return confirm('<%= user.blocked ? `Unblock ${user.username}? They will be able to log in again.` : `Block ${user.username}? They will be logged out immediately.` %>');">
+                      <input type="hidden" name="reason" value="">
+                      <button class="btn btn-sm <%= user.blocked ? 'btn-outline-success' : 'btn-outline-warning' %>">
+                        <i class="fa-solid <%= user.blocked ? 'fa-unlock' : 'fa-ban' %>"></i> <%= user.blocked ? 'Unblock' : 'Block' %>
+                      </button>
+                    </form>
+                    <form action="/admin/users/<%= user._id %>?_method=DELETE" method="POST"
+                          onsubmit="return confirm('Permanently delete <%= user.username %>?<%= user.role === 'owner' ? ' All their listings, messes, laundry services, vehicles and payout requests will be removed.' : ' Their reviews and visit requests will be removed.' %> This cannot be undone.');">
+                      <button class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i> Delete</button>
+                    </form>
+                  </div>
+                <% } else { %>
+                  <small class="text-muted">Protected</small>
+                <% } %>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <p class="small text-muted mt-3 mb-0"><i class="fa-solid fa-circle-info"></i> Blocking logs the user out immediately and prevents login. Deleting an owner removes all their services; payment records are always kept for accounting.</p>
+</div>

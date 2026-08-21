@@ -12,6 +12,21 @@ const userSchema = new Schema({
         enum : ['student', 'owner', 'admin'],
         default : 'student',
     },
+    blocked : {
+        type : Boolean,
+        default : false,
+        index : true,
+    },
+    blockedAt : {
+        type : Date,
+        default : null,
+    },
+    blockReason : {
+        type : String,
+        default : '',
+        trim : true,
+        maxlength : 300,
+    },
     phone : {
         type : String,
         default : '',
@@ -34,6 +49,6 @@ const userSchema = new Schema({
         accountNumber: { type: String, default: '', trim: true },
         ifsc: { type: String, default: '', trim: true, uppercase: true },
     }
-});
+}, { timestamps: true });
 userSchema.plugin(passportLocalMongoose);
 module.exports = mongoose.model('User', userSchema);
