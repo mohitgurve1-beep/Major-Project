@@ -1,40 +1,95 @@
 <% layout("/layouts/boilerplate") %>
 
-<div class="container">
-<div class="row mt-3 justify-content-center">
-    <h1 class="col-12 col-md-6">Sign Up — Student Accommodation</h1>
-    <div class="col-12 col-md-6">
-        <form action="/signup" method="POST" class="needs-validation" novalidate>
-        <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
-            <input type="text" name="username" id="username" class="form-control" required> 
-            <div class="valid-feedback">Looks good!</div>
-          <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input type="email" name="email" id="email" class="form-control" required> 
-          </div>
-          <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" name="password" id="password" class="form-control" required> 
-          </div>
-          <div class="mb-3">
-            <label for="role" class="form-label">I am a</label>
-            <select name="role" id="role" class="form-control" required>
-                <option value="student">Student / Working Professional</option>
-                <option value="owner">Property Owner</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="phone" class="form-label">Phone Number (optional)</label>
-            <input type="text" name="phone" id="phone" class="form-control" placeholder="+91 9876543210">
-          </div>
-          <div class="mb-3">
-            <label for="whatsapp" class="form-label">WhatsApp Number (optional)</label>
-            <input type="text" name="whatsapp" id="whatsapp" class="form-control" placeholder="+91 9876543210">
-          </div>
-<button class="btn btn-success">Sign Up</button>
-        </form>
-    </div>
-</div>
-</div>
+<div class="auth-page">
+  <div class="auth-shell">
 
+    <!-- Brand panel (desktop only) -->
+    <div class="auth-aside">
+      <a href="/listings" class="auth-brand">
+        <span class="auth-brand-icon"><i class="fa-solid fa-graduation-cap"></i></span>
+        <span>Student<span>Stay</span></span>
+      </a>
+      <div class="auth-aside-body">
+        <h2>Join StudentStay today.</h2>
+        <p>One account for everything — rooms, mess plans, laundry and vehicle rentals near your college.</p>
+        <div class="auth-perk"><i class="fa-solid fa-magnifying-glass"></i> Students: find &amp; book in minutes</div>
+        <div class="auth-perk"><i class="fa-solid fa-store"></i> Owners: list rooms and manage bookings</div>
+        <div class="auth-perk"><i class="fa-solid fa-shield-halved"></i> Secure payments with wallet &amp; COD</div>
+      </div>
+      <div class="auth-aside-footer">Free to join · No hidden charges.</div>
+    </div>
+
+    <!-- Form -->
+    <div class="auth-main">
+      <div class="auth-mobile-brand"><span class="auth-brand-icon"><i class="fa-solid fa-graduation-cap"></i></span> Student<span>Stay</span></div>
+      <h1 class="auth-title">Create your account</h1>
+      <p class="auth-subtitle">Sign up as a student or a property owner.</p>
+
+      <form action="/signup" method="POST" class="needs-validation" novalidate autocomplete="on">
+
+        <!-- Role picker -->
+        <div class="role-picker" role="radiogroup" aria-label="I am a">
+          <label class="role-option">
+            <input type="radio" name="role" value="student" checked>
+            <div class="role-box">
+              <i class="fa-solid fa-user-graduate"></i>
+              <span>Student</span>
+            </div>
+          </label>
+          <label class="role-option">
+            <input type="radio" name="role" value="owner">
+            <div class="role-box">
+              <i class="fa-solid fa-house-chimney-window"></i>
+              <span>Owner</span>
+            </div>
+          </label>
+        </div>
+
+        <div class="auth-field">
+          <i class="fa-regular fa-user"></i>
+          <input type="text" name="username" id="username" class="form-control" placeholder="Username" required autocomplete="username">
+          <div class="invalid-feedback">Please choose a username.</div>
+        </div>
+
+        <div class="auth-field">
+          <i class="fa-regular fa-envelope"></i>
+          <input type="email" name="email" id="email" class="form-control" placeholder="Email address" required autocomplete="email">
+          <div class="invalid-feedback">Please enter a valid email address.</div>
+        </div>
+
+        <div class="auth-field has-toggle">
+          <i class="fa-solid fa-lock"></i>
+          <input type="password" name="password" id="password" class="form-control" placeholder="Password (min 6 characters)" minlength="6" required autocomplete="new-password">
+          <button type="button" class="auth-toggle-password" data-toggle-password="#password" aria-label="Show or hide password">
+            <i class="fa-regular fa-eye"></i>
+          </button>
+          <div class="invalid-feedback">Password must be at least 6 characters.</div>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-12 col-sm-6">
+            <div class="auth-field mb-0">
+              <i class="fa-solid fa-phone"></i>
+              <input type="tel" name="phone" id="phone" class="form-control" placeholder="Phone (optional)" autocomplete="tel">
+            </div>
+          </div>
+          <div class="col-12 col-sm-6">
+            <div class="auth-field mb-0">
+              <i class="fa-brands fa-whatsapp"></i>
+              <input type="tel" name="whatsapp" id="whatsapp" class="form-control" placeholder="WhatsApp (optional)" autocomplete="tel">
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-auth">
+          <i class="fa-solid fa-user-plus me-2"></i> Create account
+        </button>
+      </form>
+
+      <p class="auth-alt">
+        Already have an account? <a href="/login">Log in</a>
+      </p>
+    </div>
+
+  </div>
+</div>

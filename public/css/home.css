@@ -387,3 +387,95 @@ html, body {
   .home-btn-primary { padding: 0.5rem 1.2rem; font-size: 0.82rem; }
   .home-btn-light, .home-btn-outline-light { padding: 0.6rem 1.5rem; font-size: 0.85rem; }
 }
+
+/* ============================================ */
+/* Navbar — mobile / tablet drawer polish       */
+/* Fixes overlapping text; solid bg in drawer   */
+/* ============================================ */
+@media (max-width: 991.98px) {
+  .home-navbar { padding-top: 0.4rem; padding-bottom: 0.4rem; }
+
+  /* The expanded drawer gets its own solid background + rounded card look */
+  .home-navbar .navbar-collapse {
+    background: #ffffff;
+    border-top: 1px solid #eef2f7;
+    border-radius: 0 0 16px 16px;
+    box-shadow: 0 18px 34px rgba(15, 23, 42, 0.14);
+    margin-top: 0.6rem;
+    padding: 0.65rem 1rem 1rem;
+    max-height: calc(100vh - 90px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  /* Nav links: roomy tap rows, never overlapping */
+  .home-navbar .navbar-nav { gap: 0.15rem; }
+  .home-navbar .navbar-nav.mx-auto { margin-left: 0 !important; margin-right: 0 !important; }
+  .home-navbar .navbar-nav .nav-link {
+    padding: 0.7rem 0.85rem;
+    border-radius: 10px;
+    font-weight: 600;
+    color: #0f172a;
+    white-space: normal;
+  }
+  .home-navbar .navbar-nav .nav-link:hover,
+  .home-navbar .navbar-nav .nav-link.active { background: #eff6ff; color: #2563eb; }
+
+  /* Action area stacks below the links, full width */
+  .home-navbar .home-nav-actions {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.5rem !important;
+    width: 100%;
+    margin-top: 0.6rem;
+    padding-top: 0.8rem;
+    border-top: 1px dashed #e2e8f0;
+  }
+  .home-nav-actions .btn,
+  .home-nav-actions .home-btn-primary,
+  .home-nav-actions .home-btn-outline {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Icon-only links become labelled rows */
+  .home-navbar .home-nav-icon {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.55rem 0.85rem;
+    border-radius: 10px;
+    font-size: 1.05rem;
+    color: #0f172a;
+    font-weight: 600;
+  }
+  .home-navbar .home-nav-icon:hover { background: #eff6ff; color: #2563eb; }
+
+  /* Dropdowns open inline inside the drawer (no floating overlap) */
+  .home-navbar .dropdown-menu {
+    position: static !important;
+    transform: none !important;
+    width: 100%;
+    max-height: 320px;
+    overflow-y: auto;
+    box-shadow: none;
+    border: 1px solid #eef2f7;
+    border-radius: 12px;
+    margin-top: 0.35rem;
+  }
+  .home-navbar .nav-item.dropdown > .nav-link { justify-content: space-between; }
+  .profile-avatar-row { display: flex; align-items: center; gap: 0.6rem; }
+}
+
+@media (min-width: 992px) {
+  .drawer-label { display: none !important; }
+}
+
+/* Round, friendlier hamburger on touch devices */
+.home-navbar .navbar-toggler {
+  border: none;
+  padding: 0.45rem 0.6rem;
+  border-radius: 10px;
+  background: #f1f5f9;
+}
+.home-navbar .navbar-toggler:focus { box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25); }

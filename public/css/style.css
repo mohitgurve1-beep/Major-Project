@@ -2758,3 +2758,48 @@ h1, h2, h3, h4, h5, h6 {
     max-width: 400px;
   }
 }
+
+/* ============================================ */
+/* Global responsiveness & UX polish            */
+/* (additive — safe overrides only)             */
+/* ============================================ */
+
+html { scroll-behavior: smooth; }
+body { overflow-x: hidden; }
+
+img { max-width: 100%; height: auto; }
+.card-img-top { width: 100%; object-fit: cover; }
+
+/* Long emails / usernames / ids must wrap instead of stretching tables */
+.table td, .table th { overflow-wrap: anywhere; }
+.dropdown-item, .notif-message { overflow-wrap: anywhere; }
+
+/* Card titles never blow out their layout */
+.card-title { overflow-wrap: anywhere; }
+
+/* Consistent card media heights across grids */
+.listing-card img.card-img-top,
+.mess-card img.card-img-top { aspect-ratio: 16 / 10; }
+
+/* Comfortable tap targets on touch screens */
+@media (hover: none) and (pointer: coarse) {
+  .btn { min-height: 42px; }
+  .form-control, .form-select { min-height: 44px; }
+}
+
+/* Prevent iOS auto-zoom on focus + tighter mobile spacing */
+@media (max-width: 575.98px) {
+  .form-control, .form-select { font-size: 16px; }
+  h2 { font-size: 1.45rem; }
+  .container { padding-left: 1rem; padding-right: 1rem; }
+  /* Action rows stack cleanly */
+  .d-flex.gap-2 .btn { flex: 1 0 auto; }
+  /* Modals & dropdowns stay inside the viewport */
+  .modal-dialog { margin: 0.5rem; }
+}
+
+/* Very small phones */
+@media (max-width: 360px) {
+  .navbar-brand .home-brand-text { font-size: 1rem; }
+  .btn { padding-left: 0.6rem; padding-right: 0.6rem; font-size: 0.85rem; }
+}

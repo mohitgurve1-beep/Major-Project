@@ -1,22 +1,55 @@
 <% layout("/layouts/boilerplate") %>
 
-<div class="container">
-<div class="row mt-3 justify-content-center">
-    <h1 class="col-12 col-md-6">Login</h1>
-    <div class="col-12 col-md-6">
-        <form action="/login" method="POST" class="needs-validation" novalidate>
-        <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
-            <input type="text" name="username" id="username" class="form-control" required> 
-            <div class="valid-feedback">Looks good!</div>
-          </div>
-          <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" name="password" id="password" class="form-control" required> 
-          </div>
-<button class="btn btn-success">Login</button>
-        </form>
+<div class="auth-page">
+  <div class="auth-shell">
+
+    <!-- Brand panel (desktop only) -->
+    <div class="auth-aside">
+      <a href="/listings" class="auth-brand">
+        <span class="auth-brand-icon"><i class="fa-solid fa-graduation-cap"></i></span>
+        <span>Student<span>Stay</span></span>
+      </a>
+      <div class="auth-aside-body">
+        <h2>Welcome back!<br>Your next stay is waiting.</h2>
+        <p>Log in to manage your bookings, payments and listings — all in one place.</p>
+        <div class="auth-perk"><i class="fa-solid fa-check"></i> Book rooms, mess, laundry &amp; vehicles</div>
+        <div class="auth-perk"><i class="fa-solid fa-check"></i> Pay online or choose cash on delivery</div>
+        <div class="auth-perk"><i class="fa-solid fa-check"></i> Track every payment in one dashboard</div>
+      </div>
+      <div class="auth-aside-footer">Trusted by students across 100+ colleges.</div>
     </div>
-    
-</div>
+
+    <!-- Form -->
+    <div class="auth-main">
+      <div class="auth-mobile-brand"><span class="auth-brand-icon"><i class="fa-solid fa-graduation-cap"></i></span> Student<span>Stay</span></div>
+      <h1 class="auth-title">Log in</h1>
+      <p class="auth-subtitle">Enter your details to continue.</p>
+
+      <form action="/login" method="POST" class="needs-validation" novalidate autocomplete="on">
+        <div class="auth-field">
+          <i class="fa-regular fa-user"></i>
+          <input type="text" name="username" id="username" class="form-control" placeholder="Username" required autocomplete="username" autofocus>
+          <div class="invalid-feedback">Please enter your username.</div>
+        </div>
+
+        <div class="auth-field has-toggle">
+          <i class="fa-solid fa-lock"></i>
+          <input type="password" name="password" id="password" class="form-control" placeholder="Password" required autocomplete="current-password">
+          <button type="button" class="auth-toggle-password" data-toggle-password="#password" aria-label="Show or hide password">
+            <i class="fa-regular fa-eye"></i>
+          </button>
+          <div class="invalid-feedback">Please enter your password.</div>
+        </div>
+
+        <button type="submit" class="btn btn-auth">
+          <i class="fa-solid fa-right-to-bracket me-2"></i> Log in
+        </button>
+      </form>
+
+      <p class="auth-alt">
+        New to StudentStay? <a href="/signup">Create an account</a>
+      </p>
+    </div>
+
+  </div>
 </div>

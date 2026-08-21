@@ -32,14 +32,14 @@
 
           <!-- Wishlist -->
           <a class="home-nav-icon position-relative" href="/listings" title="Wishlist" aria-label="Wishlist">
-            <i class="fa-regular fa-heart"></i>
+            <i class="fa-regular fa-heart"></i><span class="drawer-label">Wishlist</span>
           </a>
 
           <% if(currUser){ %>
             <!-- Notification Bell -->
             <div class="nav-item dropdown">
               <a class="home-nav-icon notification-bell position-relative" href="#" id="notifDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="fa-regular fa-bell"></i>
+                <i class="fa-regular fa-bell"></i><span class="drawer-label">Notifications</span>
                 <% if(typeof unreadNotifications !== 'undefined' && unreadNotifications > 0){ %>
                   <span class="notification-badge"><%= unreadNotifications %></span>
                 <% } %>
@@ -76,9 +76,10 @@
             <!-- Profile Dropdown -->
             <div class="nav-item dropdown">
               <a class="nav-link" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <div class="profile-avatar">
-                  <%= currUser.username.charAt(0).toUpperCase() %>
-                </div>
+                <span class="profile-avatar-row">
+                  <span class="profile-avatar"><%= currUser.username.charAt(0).toUpperCase() %></span>
+                  <span class="drawer-label"><%= currUser.username %></span>
+                </span>
               </a>
               <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown" style="border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); border: none; min-width: 200px;">
                 <li class="dropdown-header text-center">
